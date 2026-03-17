@@ -715,6 +715,16 @@ body.is-mobile-horizontal-nav .scene {
     transform: translateX(-50%);
   }
 
+  .book-tyc {
+    top: 21%;
+    left: 11%;
+  }
+
+  .estante {
+    top: 29%;
+    left: 1%;
+  }
+
   .gyro-reset-btn {
     position: fixed;
     left: 50%;

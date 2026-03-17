@@ -178,8 +178,8 @@ export function initMobileNavigation() {
     }
 
     const relativeGamma = (horizontalTilt - state.gyroBaseline) * -1;
-    const limitedGamma = Math.max(-18, Math.min(18, relativeGamma));
-    const ratio = (limitedGamma + 18) / 36;
+    const limitedGamma = Math.max(-28, Math.min(28, relativeGamma));
+    const ratio = (limitedGamma + 28) / 56;
     state.targetOffset = clampOffset(ratio * state.maxOffset);
   }
 
