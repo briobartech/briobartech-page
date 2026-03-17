@@ -1,5 +1,5 @@
 function isMobileViewport() {
-  return window.matchMedia('(max-width: 900px) and (pointer: coarse)').matches;
+  return window.matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0;
 }
 
 function isElementVisible(element) {
@@ -49,6 +49,7 @@ export function initMobileNavigation() {
     hasGyroBaseline: false,
     gyroBaseline: 0,
     gyroReady: false,
+    permissionRequested: false,
   };
 
   function clampOffset(value) {
@@ -192,21 +193,37 @@ export function initMobileNavigation() {
   async function requestGyroscopePermission() {
     if (!isMobileViewport()) return false;
 
-    const DeviceOrientation = window.DeviceOrientationEvent;
-    if (!DeviceOrientation) {
+    state.permissionRequested = true;
+
+    const requestables = [
+      window.DeviceOrientationEvent,
+      window.DeviceMotionEvent,
+    ].filter(Boolean);
+
+    if (requestables.length === 0) {
+      state.gyroReady = false;
       return false;
     }
 
-    if (typeof DeviceOrientation.requestPermission === 'function') {
-      try {
-        const result = await DeviceOrientation.requestPermission();
-        state.gyroReady = result === 'granted';
-      } catch {
-        state.gyroReady = false;
+    let granted = false;
+
+    for (const EventType of requestables) {
+      if (typeof EventType.requestPermission === 'function') {
+        try {
+          const result = await EventType.requestPermission();
+          if (result === 'granted') {
+            granted = true;
+          }
+        } catch {
+          // Ignore and keep trying other permission APIs.
+        }
+      } else {
+        // Most Android browsers expose sensors without explicit prompt.
+        granted = true;
       }
-    } else {
-      state.gyroReady = true;
     }
+
+    state.gyroReady = granted;
 
     if (state.gyroReady) {
       resetGyroBaseline();
@@ -236,6 +253,11 @@ export function initMobileNavigation() {
   document.addEventListener('touchmove', onTouchMove, { passive: false });
   document.addEventListener('touchend', onTouchEnd, { passive: true });
   document.addEventListener('touchcancel', onTouchEnd, { passive: true });
+  document.addEventListener('touchend', () => {
+    if (!state.permissionRequested && !state.gyroReady && !hasBlockingOverlay()) {
+      requestGyroscopePermission();
+    }
+  }, { passive: true });
 
   return {
     requestGyroscopePermission,

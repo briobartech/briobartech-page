@@ -689,19 +689,28 @@ body.is-mobile-horizontal-nav .scene {
     min-height: 100dvh;
     position: relative;
     display: block;
+    --mobile-hero-width: clamp(470px, 90vw, 700px);
+    --mobile-hero-bottom: clamp(170px, 22vh, 250px);
+    --mobile-sky-bottom: calc(var(--mobile-hero-bottom) + clamp(88px, 11vh, 126px));
   }
 
   .windows {
+    width: var(--mobile-hero-width);
+    bottom: var(--mobile-hero-bottom);
     left: 50%;
     transform: translateX(-50%);
   }
 
   .sky {
+    width: calc(var(--mobile-hero-width) * 0.75);
+    bottom: var(--mobile-sky-bottom);
     left: 50%;
     transform: translateX(-50%);
   }
 
   .brio {
+    width: clamp(270px, 54vw, 390px);
+    bottom: 0;
     left: 50%;
     transform: translateX(-50%);
   }
