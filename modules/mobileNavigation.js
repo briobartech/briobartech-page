@@ -12,6 +12,7 @@ function hasBlockingOverlay() {
     document.getElementById('optionsModal'),
     document.getElementById('pdfViewerModal'),
     document.getElementById('termsModal'),
+    document.getElementById('silenceMessage'),
   ].some(isElementVisible);
 }
 
@@ -158,7 +159,7 @@ export function initMobileNavigation() {
       state.gyroBaseline = horizontalTilt;
     }
 
-    const relativeGamma = horizontalTilt - state.gyroBaseline;
+    const relativeGamma = (horizontalTilt - state.gyroBaseline) * -1;
     const limitedGamma = Math.max(-18, Math.min(18, relativeGamma));
     const ratio = (limitedGamma + 18) / 36;
     state.targetOffset = clampOffset(ratio * state.maxOffset);
