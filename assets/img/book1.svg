@@ -1,0 +1,21 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+	<style>
+		.background { fill: #a94444 }
+		.shadow { fill: #9a3838 }
+		.front { fill: #d46a6a }
+		.light { fill: #ec8686 }
+		.gold { opacity: .6;fill: #e3d668 }
+	</style>
+	<g id="Layer 1">
+		<path id="bg" fill-rule="evenodd" class="background" d="m165 65v287h-62v-287z" />
+		<path id="sh1" fill-rule="evenodd" class="shadow" d="m164.97 65v287h-16.94v-287z" />
+		<path id="sh2" fill-rule="evenodd" class="shadow" d="m165 336v16h-42v-16z" />
+		<path id="br1" fill-rule="evenodd" class="front" d="m120 65v287h-18v-287z" />
+
+		<path id="Shape 5" fill-rule="evenodd" class="light" d="m135 65v6h-33v-6z" />
+		<path id="Shape 6" fill-rule="evenodd" class="light" d="m108 69v29h-6v-29z" />
+		<path id="Shape 7" fill-rule="evenodd" class="light" d="m111.5 68v6.5h-6.5v-6.5z" />
+
+		<path id="gold" fill-rule="evenodd" class="gold" d="m165 130v44h-63v-44z" />
+	</g>
+</svg>

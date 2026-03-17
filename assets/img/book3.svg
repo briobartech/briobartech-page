@@ -1,0 +1,22 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+	<style>
+		.s0 { fill: #9a3838 } 
+		.s1 { opacity: .2;fill: #ec8686 } 
+		.s2 { opacity: .7;fill: #ec8686 } 
+		.s3 { fill: #ec8686 } 
+		.s4 { opacity: .6;fill: #e3d668 } 
+	</style>
+	<g id="Layer 1">
+		<path id="bg" fill-rule="evenodd" class="s0" d="m190 65v287h-87v-287z"/>
+		<path id="sh1" fill-rule="evenodd" class="s1" d="m170 65v263h-50v-263z"/>
+		<path id="sh2" fill-rule="evenodd" class="s0" d="m165 336v16h-42v-16z"/>
+		<path id="br1" fill-rule="evenodd" class="s2" d="m120 65v287h-18v-287z"/>
+		<g id="bright">
+			<path id="Shape 5" fill-rule="evenodd" class="s3" d="m135 65v6h-33v-6z"/>
+			<path id="Shape 6" fill-rule="evenodd" class="s3" d="m108 69v29h-6v-29z"/>
+			<path id="Shape 7" fill-rule="evenodd" class="s3" d="m114.93 68v6.5h-9.12v-6.5z"/>
+		</g>
+		<path id="gold" fill-rule="evenodd" class="s4" d="m190 130v44h-88v-44z"/>
+		<path id="gold2" fill-rule="evenodd" class="s4" d="m190 289v21h-88v-21z"/>
+	</g>
+</svg>
