@@ -714,6 +714,26 @@ body.is-mobile-horizontal-nav .scene {
     left: 50%;
     transform: translateX(-50%);
   }
+
+  .gyro-reset-btn {
+    position: fixed;
+    left: 50%;
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    z-index: 6900;
+    min-width: 112px;
+    height: 34px;
+    border: 1px solid #1a2e56;
+    border-radius: 18px;
+    background: transparent;
+    color: #e6ebf5;
+    font-size: 12px;
+    font-weight: 700;
+    align-items: center;
+    justify-content: center;
+    box-shadow: none;
+    touch-action: manipulation;
+  }
 }
 
 .silence-message {

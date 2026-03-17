@@ -16,6 +16,15 @@ function hasBlockingOverlay() {
   ].some(isElementVisible);
 }
 
+function hasModalOverlay() {
+  return [
+    document.getElementById('startOverlay'),
+    document.getElementById('optionsModal'),
+    document.getElementById('pdfViewerModal'),
+    document.getElementById('termsModal'),
+  ].some(isElementVisible);
+}
+
 function shouldIgnoreTouchTarget(target) {
   if (!(target instanceof Element)) return false;
 
@@ -52,6 +61,13 @@ export function initMobileNavigation() {
     gyroReady: false,
     permissionRequested: false,
   };
+
+  const resetBtn = document.createElement('button');
+  resetBtn.type = 'button';
+  resetBtn.className = 'gyro-reset-btn';
+  resetBtn.textContent = 'Reset Gyro';
+  resetBtn.style.display = 'none';
+  document.body.appendChild(resetBtn);
 
   function clampOffset(value) {
     return Math.max(0, Math.min(state.maxOffset, value));
@@ -108,6 +124,8 @@ export function initMobileNavigation() {
 
   function animate() {
     if (!state.active) return;
+
+    resetBtn.style.display = hasModalOverlay() ? 'none' : 'flex';
 
     if (hasBlockingOverlay()) {
       state.touchActive = false;
@@ -235,6 +253,19 @@ export function initMobileNavigation() {
 
   document.documentElement.classList.add('is-mobile-horizontal-nav');
   document.body.classList.add('is-mobile-horizontal-nav');
+
+  resetBtn.addEventListener('click', (event) => {
+    event.preventDefault();
+    if (hasModalOverlay()) return;
+
+    resetGyroBaseline();
+    state.targetOffset = clampOffset(state.maxOffset / 2);
+
+    if (!state.gyroReady) {
+      requestGyroscopePermission();
+    }
+  });
+
   refreshBounds(false);
   animate();
 
