@@ -5,6 +5,8 @@ const BOOK_ICONS = [
   './assets/img/book4.svg',
 ];
 
+import { closeInteractiveModals } from './modalExclusivity.js';
+
 const BOOKS_PER_PAGE = 60;
 
 const BOOK_BASE_COLORS = {
@@ -181,6 +183,7 @@ export async function initBookshelf() {
   shelf.insertAdjacentElement('afterend', pagination);
 
   function openPdf(path) {
+    closeInteractiveModals('pdfViewerModal');
     frame.src = path;
     title.textContent = path.split('/').pop() || 'Documento';
     modal.style.display = 'flex';

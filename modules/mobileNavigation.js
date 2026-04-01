@@ -12,6 +12,7 @@ function hasBlockingOverlay() {
     document.getElementById('optionsModal'),
     document.getElementById('pdfViewerModal'),
     document.getElementById('termsModal'),
+    document.getElementById('certificateModal'),
     document.getElementById('silenceMessage'),
   ].some(isElementVisible);
 }
@@ -22,6 +23,7 @@ function hasModalOverlay() {
     document.getElementById('optionsModal'),
     document.getElementById('pdfViewerModal'),
     document.getElementById('termsModal'),
+    document.getElementById('certificateModal'),
   ].some(isElementVisible);
 }
 
@@ -30,7 +32,7 @@ function shouldIgnoreTouchTarget(target) {
 
   return Boolean(
     target.closest(
-      '#optionsModal, #pdfViewerModal, #termsModal, .folder-window, .projects-viewer, button, a, input, iframe'
+      '#optionsModal, #pdfViewerModal, #termsModal, #certificateModal, .folder-window, .projects-viewer, button, a, input, iframe'
     )
   );
 }

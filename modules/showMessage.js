@@ -1,8 +1,34 @@
+function getMessageElement() {
+    return document.getElementById('silenceMessage');
+}
+
+function hasBlockingModalOpen() {
+    return [
+        document.getElementById('optionsModal'),
+        document.getElementById('pdfViewerModal'),
+        document.getElementById('termsModal'),
+        document.getElementById('certificateModal'),
+    ].some((element) => Boolean(element) && getComputedStyle(element).display !== 'none');
+}
+
+export function hideMessage() {
+    const message = getMessageElement();
+    if (!message) return;
+
+    message.style.opacity = '0';
+    message.style.display = 'none';
+}
+
 export function showMessage(text, anchorTarget) {
-    const message = document.getElementById('silenceMessage');
+    const message = getMessageElement();
     if (!message) {
         console.error('Message element not found');
         return;
+    }
+
+    if (hasBlockingModalOpen()) {
+        hideMessage();
+        return Promise.resolve();
     }
 
     if (message.parentElement !== document.body) {

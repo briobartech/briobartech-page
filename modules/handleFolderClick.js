@@ -8,6 +8,8 @@ export function initFolders() {
     const gameIcons = document.querySelectorAll('.game-icon');
     const closeBtns = document.querySelectorAll('.folder-close');
     const maximizeBtns = document.querySelectorAll('.folder-maximize');
+    const folderWindowsList = document.querySelectorAll('.folder-window');
+    const titleBars = document.querySelectorAll('.folder-window .title-bar');
 
     // Map folder names to window IDs
     const folderWindows = {
@@ -30,6 +32,72 @@ export function initFolders() {
     let brickBreakerGameInstance = null;
     let battleCityGameInstance = null;
     const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+    let topZIndex = 50;
+
+    function bringWindowToFront(window) {
+        if (!window || window.classList.contains('maximized')) return;
+        topZIndex += 1;
+        window.style.zIndex = String(topZIndex);
+    }
+
+    function initWindowDragging() {
+        titleBars.forEach((titleBar) => {
+            const window = titleBar.closest('.folder-window');
+            if (!window) return;
+
+            titleBar.addEventListener('pointerdown', (event) => {
+                if (event.button !== 0) return;
+                if (event.target instanceof Element && event.target.closest('button')) return;
+                if (window.classList.contains('maximized')) return;
+
+                const parent = window.offsetParent instanceof HTMLElement
+                    ? window.offsetParent
+                    : window.parentElement;
+                if (!(parent instanceof HTMLElement)) return;
+
+                bringWindowToFront(window);
+
+                const windowRect = window.getBoundingClientRect();
+                const parentRect = parent.getBoundingClientRect();
+                const offsetX = event.clientX - windowRect.left;
+                const offsetY = event.clientY - windowRect.top;
+
+                const minLeft = 0;
+                const minTop = 0;
+                const maxLeft = Math.max(0, parent.clientWidth - windowRect.width);
+                const maxTop = Math.max(0, parent.clientHeight - windowRect.height);
+
+                titleBar.setPointerCapture(event.pointerId);
+                event.preventDefault();
+
+                const onPointerMove = (moveEvent) => {
+                    if (window.classList.contains('maximized')) return;
+
+                    const rawLeft = moveEvent.clientX - parentRect.left - offsetX;
+                    const rawTop = moveEvent.clientY - parentRect.top - offsetY;
+
+                    const nextLeft = Math.min(Math.max(minLeft, rawLeft), maxLeft);
+                    const nextTop = Math.min(Math.max(minTop, rawTop), maxTop);
+
+                    window.style.left = `${nextLeft}px`;
+                    window.style.top = `${nextTop}px`;
+                };
+
+                const endDrag = (endEvent) => {
+                    if (titleBar.hasPointerCapture(endEvent.pointerId)) {
+                        titleBar.releasePointerCapture(endEvent.pointerId);
+                    }
+                    titleBar.removeEventListener('pointermove', onPointerMove);
+                    titleBar.removeEventListener('pointerup', endDrag);
+                    titleBar.removeEventListener('pointercancel', endDrag);
+                };
+
+                titleBar.addEventListener('pointermove', onPointerMove);
+                titleBar.addEventListener('pointerup', endDrag);
+                titleBar.addEventListener('pointercancel', endDrag);
+            });
+        });
+    }
 
     function openFolder(folderType) {
         const windowId = folderWindows[folderType];
@@ -38,6 +106,7 @@ export function initFolders() {
         const window = document.getElementById(windowId);
         if (window) {
             window.style.display = 'flex';
+            bringWindowToFront(window);
         }
     }
 
@@ -48,6 +117,7 @@ export function initFolders() {
         const window = document.getElementById(windowId);
         if (window) {
             window.style.display = 'flex';
+            bringWindowToFront(window);
 
             if (gameType === 'snake' && !snakeGameInstance) {
                 snakeGameInstance = initSnake();
@@ -141,7 +211,14 @@ export function initFolders() {
                 window.style.height = window.dataset.prevHeight || '';
                 btn.textContent = '□';
                 btn.title = 'Maximizar';
+                bringWindowToFront(window);
             }
         });
     });
+
+    folderWindowsList.forEach((window) => {
+        window.addEventListener('pointerdown', () => bringWindowToFront(window));
+    });
+
+    initWindowDragging();
 }

@@ -1,6 +1,8 @@
 import { checkBrioStatus } from "./modules/handBrioClick.js";
 import { handleBrioClick } from "./modules/handBrioClick.js";
-import { closeOptionsModal } from "./modules/closeOptionsModal.js";
+import { getIsBrioWorking } from "./modules/handBrioClick.js";
+import { resetBusyInterruptions } from "./modules/handBrioClick.js";
+import { closeOptionsModal, getUniqueTurnOffMusicPhrase } from "./modules/closeOptionsModal.js";
 import { handleDesktopClick } from "./modules/handleDesktopClick.js";
 import { state } from "./modules/state.js";
 import { initFolders } from "./modules/handleFolderClick.js";
@@ -11,6 +13,7 @@ import { initBookshelf } from './modules/bookshelf.js';
 import { initMobileNavigation } from './modules/mobileNavigation.js';
 import { initMobileGameControls } from './modules/mobileGameControls.js';
 import { initMusicPlayer } from './modules/musicPlayer.js';
+import { initCertificateModal } from './modules/handleCertificateClick.js';
 
 function portalModalsToViewport() {
   const modalSelectors = ['.modal-window', '.pdf-viewer-modal'];
@@ -52,6 +55,7 @@ if (optionsModalCloseBtn) {
 
 portalModalsToViewport();
 initMobileGameControls();
+checkBrioStatus();
 
 const actions = {
   brio: handleBrioClick,
@@ -70,28 +74,116 @@ document.addEventListener("click", (e) => {
   }
 });
 
-const bookTyc = document.querySelector(".book-tyc");
-bookTyc.addEventListener("mouseenter", () => {
-  bookTyc.src = "./assets/img/book-tyc-on.png";
-  bookTyc.style.transform = "scale(1.1)";
-  bookTyc.style.zIndex = "12";
-});
-bookTyc.addEventListener("mouseleave", () => {
-  bookTyc.src = "./assets/img/book-tyc-off.png";
-  bookTyc.style.transform = "scale(1)";
-  bookTyc.style.zIndex = "10";
-});
-
 const music = document.getElementById("backgroundMusic");
 const desktop = document.querySelector(".desktop");
 const soundToggleBtn = document.getElementById("toggleMusicBtn");
 const soundIcon = document.getElementById("soundIcon");
 const soundLabel = document.getElementById("soundLabel");
 const mobileNavigation = initMobileNavigation();
-const shownTurnOffMusicIndices = {
-  es: new Set(),
-  en: new Set(),
-};
+
+function initNowPlayingWidget(audioElement) {
+  const widget = document.getElementById('nowPlayingWidget');
+  const text = document.getElementById('nowPlayingText');
+  const controls = document.getElementById('nowPlayingControls');
+  const prevBtn = document.getElementById('nowPlayingPrevBtn');
+  const toggleBtn = document.getElementById('nowPlayingToggleBtn');
+  const nextBtn = document.getElementById('nowPlayingNextBtn');
+  if (!widget || !text || !audioElement || !controls || !prevBtn || !toggleBtn || !nextBtn) return;
+
+  let hideControlsTimer = null;
+
+  const clearHideControlsTimer = () => {
+    if (!hideControlsTimer) return;
+    clearTimeout(hideControlsTimer);
+    hideControlsTimer = null;
+  };
+
+  const setControlsVisible = (isVisible) => {
+    controls.hidden = !isVisible;
+    widget.classList.toggle('is-open', isVisible);
+    widget.setAttribute('aria-expanded', isVisible ? 'true' : 'false');
+  };
+
+  const scheduleHideControls = () => {
+    clearHideControlsTimer();
+    hideControlsTimer = setTimeout(() => {
+      setControlsVisible(false);
+    }, 3000);
+  };
+
+  const showControls = () => {
+    clearHideControlsTimer();
+    setControlsVisible(true);
+  };
+
+  const setPlayingState = () => {
+    widget.classList.toggle('is-playing', !audioElement.paused && state.musicEnabled);
+    toggleBtn.textContent = audioElement.paused ? '▶' : '⏸';
+    toggleBtn.setAttribute('aria-label', audioElement.paused ? 'Reproducir' : 'Pausar');
+  };
+
+  const setTrackLabel = (detail) => {
+    const title = detail?.title || 'Sin tema';
+    const artist = detail?.artist || 'Brio Selection';
+    text.textContent = `${title} · ${artist}`;
+  };
+
+  document.addEventListener('musicTrackChanged', (event) => {
+    setTrackLabel(event.detail);
+    setPlayingState();
+  });
+
+  widget.addEventListener('click', (event) => {
+    if (event.target instanceof HTMLButtonElement) return;
+    if (controls.hidden) {
+      showControls();
+      scheduleHideControls();
+      return;
+    }
+
+    setControlsVisible(false);
+    clearHideControlsTimer();
+  });
+
+  widget.addEventListener('keydown', (event) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    showControls();
+    scheduleHideControls();
+  });
+
+  widget.addEventListener('pointerenter', clearHideControlsTimer);
+  widget.addEventListener('pointerleave', () => {
+    if (!controls.hidden) {
+      scheduleHideControls();
+    }
+  });
+
+  prevBtn.addEventListener('click', (event) => {
+    event.stopPropagation();
+    document.dispatchEvent(new CustomEvent('musicWidgetPrevious'));
+    showControls();
+  });
+
+  toggleBtn.addEventListener('click', (event) => {
+    event.stopPropagation();
+    document.dispatchEvent(new CustomEvent('musicWidgetTogglePlayPause'));
+    showControls();
+  });
+
+  nextBtn.addEventListener('click', (event) => {
+    event.stopPropagation();
+    document.dispatchEvent(new CustomEvent('musicWidgetNext'));
+    showControls();
+  });
+
+  audioElement.addEventListener('play', setPlayingState);
+  audioElement.addEventListener('pause', setPlayingState);
+  document.addEventListener('backgroundMusicStateChanged', setPlayingState);
+
+  setTrackLabel(null);
+  setPlayingState();
+}
 
 function initForegroundMediaAudioPolicy() {
   const foregroundMedia = new Set();
@@ -143,30 +235,6 @@ function initForegroundMediaAudioPolicy() {
   document.addEventListener('ended', releaseForegroundMedia, true);
 }
 
-function getUniqueTurnOffMusicPhrase() {
-  const currentLanguage = window.languageState.current;
-  const turnOffMusicPhrases = window.languageState.frases.turnOffMusic || [];
-
-  if (turnOffMusicPhrases.length === 0) return "";
-
-  const usedIndices = shownTurnOffMusicIndices[currentLanguage];
-
-  // Restart cycle when all phrases were already shown.
-  if (usedIndices.size >= turnOffMusicPhrases.length) {
-    usedIndices.clear();
-  }
-
-  const availableIndices = turnOffMusicPhrases
-    .map((_, index) => index)
-    .filter((index) => !usedIndices.has(index));
-
-  const selectedIndex =
-    availableIndices[Math.floor(Math.random() * availableIndices.length)];
-  usedIndices.add(selectedIndex);
-
-  return turnOffMusicPhrases[selectedIndex] || "";
-}
-
 function applyMusicVisualState(isPlaying) {
   if (isPlaying) {
     desktop.src = "./assets/img/desktop-animated_speaker-on.gif";
@@ -199,18 +267,23 @@ function applyMusicState() {
 }
 
 soundToggleBtn.addEventListener("click", () => {
+  const wasMusicEnabled = state.musicEnabled;
   state.musicEnabled = !state.musicEnabled;
+  const justTurnedOffMusic = wasMusicEnabled && !state.musicEnabled;
+  const shouldShowImmediateTurnOffMessage = justTurnedOffMusic && getIsBrioWorking() && !state.isOptionsModalOpen;
+
   applyMusicState();
+
+  if (shouldShowImmediateTurnOffMessage) {
+    const text = getUniqueTurnOffMusicPhrase();
+    if (text) {
+      const brio = document.querySelector('.brio');
+      showMessage(text, brio || soundToggleBtn);
+    }
+  }
 
   if (state.musicEnabled) {
     music.play().catch(() => {});
-  }
-
-  if (!state.musicEnabled) {
-    const randomPhrase = getUniqueTurnOffMusicPhrase();
-    if (randomPhrase) {
-      showMessage(randomPhrase);
-    }
   }
 });
 
@@ -234,6 +307,7 @@ document.addEventListener('requestMusicEnable', () => {
 applyMusicState();
 initForegroundMediaAudioPolicy();
 initMusicPlayer(music);
+initNowPlayingWidget(music);
 
 // Language toggle button
 const languageToggleBtn = document.getElementById("toggleLanguageBtn");
@@ -245,6 +319,7 @@ languageToggleBtn.addEventListener("click", () => {
   languageLabel.textContent =
     window.languageState.current === "es" ? "ES" : "EN";
   languageToggleBtn.dataset.language = window.languageState.current;
+  resetBusyInterruptions();
 });
 
 document.getElementById("enterButton").addEventListener("click", () => {
@@ -266,12 +341,14 @@ document.getElementById("enterButton").addEventListener("click", () => {
 
   // Brio animation on enter
   const brio = document.querySelector(".brio");
-  setTimeout(() => {
-    brio.src = "./assets/img/brio-back-to-windows.gif";
-  }, 2000);
-  setTimeout(() => {
-    brio.src = "./assets/img/brio-back.png";
-  }, 2500);
+  if (!getIsBrioWorking()) {
+    setTimeout(() => {
+      brio.src = "./assets/img/brio-back-to-windows.gif";
+    }, 2000);
+    setTimeout(() => {
+      brio.src = "./assets/img/brio-back.png";
+    }, 2500);
+  }
 
   const greetings = window.languageState.frases.greetings || [];
   const greetingsBack = window.languageState.frases.greetingsBack || [];
@@ -298,6 +375,7 @@ document.getElementById("enterButton").addEventListener("click", () => {
 // Initialize folder double-click functionality
 initFolders();
 initBookshelf();
+initCertificateModal();
 
 // Proyectos multimedia: pasa aqui tu array de rutas.
 const pathProject = "./assets/img/projects/";

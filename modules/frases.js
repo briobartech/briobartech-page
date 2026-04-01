@@ -19,7 +19,7 @@ export const frasesEs = {
       `¿Podrías dejar tu nombre y tu contacto aquí? Es para comunicarme contigo, para nada lo anotaré en la Death note. Solo dejame ver bien tu cara`,
     ],
   },
-  turnOffMusic: ["Si hubiera estado sonando Ambkor no te lo perdonaba...","El silencio es un ruido insoportable a veces.", "El silencio es un ruido insoportable a veces... insoportable como cuando te apagan la música"],
+  turnOffMusic: ["No amigo, ahi venía mi siguiente hit. La va a romper, seguro","Si hubiera estado sonando Ambkor no te lo perdonaba...","El silencio es un ruido insoportable a veces.", "El silencio es un ruido insoportable a veces... insoportable como cuando te apagan la música"],
   certificates:[`Me tardé tres años en ir a buscar mi título.
 Cuando lo tuve pensé en subir una foto a redes…
 pero si a mí me importó tan poco como para tardar tres años,
@@ -33,7 +33,7 @@ pero si a mí me importó tan poco como para tardar tres años,
     `Dejé de esperar, porque ni el cielo nublado cumple con la lluvia que promete. Ni los insectos en el baño se quedaron, en la mugre que no limpié.`,
     `¿Viste cuando te giras en la cama, buscando esa presencia y solo encuentras un recuerdo que te sabe dolorosamente bello?`,
   ],
-  jokes: [
+  jokes: [`Vamos a hacer algo divertido, como reirse de un pelado. `,
     `Las artes marciales son parte de una filosofía. No deben ser consideradas un arma \n Por eso recuerda: No hay nada como un buen revólver`,
     ,
     `chistes que se me ocurren cuando veo videos de flora: ¿Sabes cómo se comunican las plantas? \n Por micelio-lar

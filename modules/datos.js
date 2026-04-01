@@ -1,0 +1,64 @@
+export const datos = {
+    name: "Brian",
+    surname: "Barquesi",
+    nickname: "Brio",
+    birthdate: "1998-10-20",
+    profession: "Profesor de Programación y Desarrollador de Software",
+    role: 'Artista "El demonio de Udev"',
+    epithets: [
+        'El demonio de Udev',
+        'Japones',
+        'El frio farfecht',
+        'El que se ríe de los pelados',
+        'El que se ríe de los pelados 2: la venganza del pelado', 
+        'El que se ríe de los pelados 3: el pelado contraataca', 
+        'El que se ríe de los pelados 4: el pelado definitivo', 
+        'El que se ríe de los pelados 5: el pelado final', 
+        'El que se ríe de los pelados 6: el pelado eterno'
+    
+
+    ],
+    studies: ["Tecnicatura Superior en Desarrollo de Software",
+        "Tecnicatura superior en Computación y Redes"
+    ],
+    certificates: ["CURSO: Edición de Video orientado a Marketing Digital (144 h) - 2025",
+        "Programa ONE - Oracle Next Education (335 h) 2022",
+        "Curso de Programación Web Backend del Trayecto Desarrollador Web Frontend Universidad Nacional de Tres de Febrero (36 h) 2023",
+        "Curso de Programación Web Backend del Trayecto Desarrollador Web Backend Universidad Nacional de Tres de Febrero (50 h) 2023",
+        "Desarrollador de Videojuegos - Nivel I (90 h) 2020"],
+    skills: {
+        promgrammingLanguages: ["JavaScript", "Python", "C#"],
+        frameworks: ["React", "Node.js", "Express", "Unity", "Godot"],
+        databases: ["MongoDB", "MySQL"],
+        designTools: ["Figma", "Adobe Photoshop", "Adobe Illustrator", "Adobe Premiere", "CapCut", "MediBang Paint"],
+        hobbies: ["Dibujo", "Videojuegos", "Música", "Escritura", "Literatura", "Astro aficionado"]
+    },
+    experiences: ["Profesor de Gestión de base de datos en el IES 9-010 'Rosario Vera Peñaloza' (2024 - presente)",
+        "Profesor de Programación para robótica (2023)",
+        "Profesor de Programación en Conectados por Mendoza Futura (2024 - presente)",
+        "Profesor de informática en CIC's (2023 - presente)"],
+    skillMastery: {
+        "JavaScript": 8,
+        "Python": 7,
+        "C#": 6,
+        "React": 7,
+        "Node.js": 7,
+        "Express": 6,
+        "Unity": 5,
+        "Godot": 6,
+        "MongoDB": 7,
+        "MySQL": 6,
+        "Figma": 6,
+        "Adobe Photoshop": 7,
+        "Adobe Illustrator": 5,
+        "Adobe Premiere": 3, "CapCut": 4,
+        "MediBang Paint": 6,
+        "Dibujo": 8,
+        "Videojuegos": 7,
+        "Música": 6,
+        "Escritura": 6,
+        "Literatura": 7,
+        "Astro aficionado": 6
+    },
+    logros: []
+}

@@ -1,289 +1,465 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/style/style.css">
-    <link rel="stylesheet" href="assets/style/reset.css">
-    <title>Document</title>
-</head>
-<body>
-   <div class="scene">
-     <img src="./assets/img/foco.png" class="foco" alt="" srcset="">
-    <img src="./assets/img/sky.gif" class="sky" alt="" srcset="">
-    <img src="./assets/img/windows.png" class="windows" alt="" srcset="">
-    <img src="./assets/img/desktop-animated_speaker-on.gif" class="desktop"></img>
-    <img src="./assets/img/desktop-bright-animated.gif" class="monitor-bright" alt="" srcset="">
-    <img src="./assets/img/brio-front.png" class="brio" alt="" srcset="">
-    <div id="silenceMessage" class="silence-message"></div>
-    <img src="./assets/img/book-tyc-off.png" class="book-tyc" alt="" srcset="">
-    <img src="./assets/img/estante.png" class="estante" alt="" srcset="">
-    <img src="./assets/img/librero.png" class="librero" alt="" srcset="">
-    <div id="bookshelfBooks" class="bookshelf-books"></div>
-
-    <div id="pdfViewerModal" class="pdf-viewer-modal" style="display:none;">
-        <div class="pdf-paper">
-            <div class="pdf-paper-header">
-                <span id="pdfViewerTitle">Documento</span>
-                <button id="closePdfViewerBtn" class="close-btn" type="button">X</button>
-            </div>
-            <div class="pdf-paper-body">
-                <iframe id="pdfViewerFrame" title="PDF Viewer"></iframe>
-            </div>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="assets/style/style.css">
+        <link rel="stylesheet" href="assets/style/reset.css">
+        <title>Document</title>
+    </head>
+    <body>
+        <div id="nowPlayingWidget" class="now-playing-widget" aria-live="polite" role="button" tabindex="0" aria-expanded="false" aria-label="Mostrar controles de musica">
+            <span class="now-playing-label">Now Playing</span>
+            <span id="nowPlayingText" class="now-playing-text">Silencio</span>
+            <span id="nowPlayingControls" class="now-playing-controls" hidden>
+                <button id="nowPlayingPrevBtn" class="now-playing-control-btn" type="button" aria-label="Tema anterior">⏮</button>
+                <button id="nowPlayingToggleBtn" class="now-playing-control-btn" type="button" aria-label="Pausar o reproducir">⏯</button>
+                <button id="nowPlayingNextBtn" class="now-playing-control-btn" type="button" aria-label="Tema siguiente">⏭</button>
+            </span>
         </div>
-    </div>
-
-    <div id="optionsModal" style="display:none; position:fixed; top:10%; left:10%; width:80%; height:80%; z-index:1000;" class="modal-window">
-        <div class="title-bar">
-            <span class="title">BriOS</span>
-            
-            <button class="close-btn" >X</button>
-        </div>
-        <div class="content options-desktop">
-            <div class="desktop-folders">
-                <div class="desktop-icon folder-icon" data-folder="contact">
-                    <img src="./assets/img/folder.png" alt="Carpeta">
-                    <span>Medios de contacto</span>
-                </div>
-                <div class="desktop-icon folder-icon" data-folder="social">
-                    <img src="./assets/img/folder.png" alt="Carpeta">
-                    <span>Redes sociales</span>
-                </div>
-                <div class="desktop-icon folder-icon" data-folder="projects">
-                    <img src="./assets/img/folder.png" alt="Carpeta proyectos">
-                    <span>Proyectos</span>
-                </div>
-                <div class="desktop-icon folder-icon" data-folder="musicplayer">
-                    <img src="./assets/img/sound-on.png" alt="Reproductor de musica">
-                    <span>Music Player</span>
-                </div>
-                <div class="desktop-icon game-icon" data-game="snake">
-                    <img src="./assets/img/snake-game.png" alt="Snake Game">
-                    <span>Snake Game</span>
-                </div>
-                <div class="desktop-icon game-icon" data-game="racing">
-                    <img src="./assets/img/racers-game.png" alt="Racing Game">
-                    <span>Racing Game</span>
-                </div>
-                <div class="desktop-icon game-icon" data-game="brickbreaker">
-                    <img src="./assets/img/brick-breaker-game.png" alt="Brick Breaker">
-                    <span>Brick Breaker</span>
-                </div>
-                <div class="desktop-icon game-icon" data-game="battlecity">
-                    <img src="./assets/img/battlecity-game.png" alt="Battle City">
-                    <span>Battle City</span>
-                </div>
-            </div>
-
-            <!-- Contact folder window -->
-            <div class="folder-window" id="contactWindow" style="display:none;">
-                <div class="title-bar">
-                    <span class="title">Medios de contacto</span>
-                    <div class="title-actions">
-                        <button class="close-btn folder-maximize" data-window="contactWindow" title="Maximizar">□</button>
-                        <button class="close-btn folder-close" data-window="contactWindow">X</button>
+        <div class="scene">
+            <img
+                src="./assets/img/foco.png"
+                class="foco"
+                alt
+                srcset
+            >
+            <img
+                src="./assets/img/sky.gif"
+                class="sky"
+                alt
+                srcset
+            >
+            <img
+                src="./assets/img/windows.png"
+                class="windows"
+                alt
+                srcset
+            >
+            <img src="./assets/img/desktop-animated_speaker-on.gif" class="desktop"></img>
+            <img
+                src="./assets/img/desktop-bright-animated.gif"
+                class="monitor-bright"
+                alt
+                srcset
+            >
+            <img
+                src="./assets/img/brio-working.png"
+                class="brio"
+                alt
+                srcset
+            >
+            <div id="silenceMessage" class="silence-message"></div>
+            <img
+                src="./assets/img/book-tyc-off.png"
+                class="book-tyc"
+                alt
+                srcset
+            >
+            <img
+                src="./assets/img/estante.png"
+                class="estante"
+                alt
+                srcset
+            >
+            <img
+                src="./assets/img/librero.png"
+                class="librero"
+                alt
+                srcset
+            >
+            <div id="bookshelfBooks" class="bookshelf-books"></div>
+            <img src="./assets/img/certificate.png" alt="Certificates" class="certificate-img" tabindex="0" role="button" aria-label="Abrir certificates">
+            <div id="pdfViewerModal" class="pdf-viewer-modal" style="display:none;">
+                <div class="pdf-paper">
+                    <div class="pdf-paper-header">
+                        <span id="pdfViewerTitle">Documento</span>
+                        <button id="closePdfViewerBtn" class="close-btn" type="button">X</button>
+                    </div>
+                    <div class="pdf-paper-body">
+                        <iframe id="pdfViewerFrame" title="PDF Viewer"></iframe>
                     </div>
                 </div>
-                <div class="folder-content">
-                    <a class="desktop-icon" href="mailto:brio@briobartech.xyz" aria-label="Correo">
-                        <img src="./assets/img/contact-mail.png" alt="Correo">
-                        <span>Correo</span>
-                    </a>
-                    <a class="desktop-icon" href="https://wa.me/5492622316791" target="_blank" aria-label="WhatsApp">
-                        <img src="./assets/img/contact-whatsapp.png" alt="WhatsApp">
-                        <span>WhatsApp</span>
-                    </a>
-                </div>
             </div>
-
-            <!-- Social folder window -->
-            <div class="folder-window" id="socialWindow" style="display:none;">
+            <div id="optionsModal" style="display:none; position:fixed; top:10%; left:10%; width:80%; height:80%; z-index:1000;" class="modal-window">
                 <div class="title-bar">
-                    <span class="title">Redes sociales</span>
-                    <div class="title-actions">
-                        <button class="close-btn folder-maximize" data-window="socialWindow" title="Maximizar">□</button>
-                        <button class="close-btn folder-close" data-window="socialWindow">X</button>
+                    <span class="title">BriOS</span>
+                    <button class="close-btn">X</button>
+                </div>
+                <div class="content options-desktop">
+                    <div class="desktop-folders">
+                        <div class="desktop-icon folder-icon" data-folder="contact">
+                            <img src="./assets/img/folder.png" alt="Carpeta">
+                            <span>Medios de contacto</span>
+                        </div>
+                        <div class="desktop-icon folder-icon" data-folder="social">
+                            <img src="./assets/img/folder.png" alt="Carpeta">
+                            <span>Redes sociales</span>
+                        </div>
+                        <div class="desktop-icon folder-icon" data-folder="projects">
+                            <img src="./assets/img/folder.png" alt="Carpeta proyectos">
+                            <span>Proyectos</span>
+                        </div>
+                        <div class="desktop-icon folder-icon" data-folder="musicplayer">
+                            <img src="./assets/img/sound-on.png" alt="Reproductor de musica">
+                            <span>Music Player</span>
+                        </div>
+                        <div class="desktop-icon game-icon" data-game="snake">
+                            <img src="./assets/img/snake-game.png" alt="Snake Game">
+                            <span>Snake Game</span>
+                        </div>
+                        <div class="desktop-icon game-icon" data-game="racing">
+                            <img src="./assets/img/racers-game.png" alt="Racing Game">
+                            <span>Racing Game</span>
+                        </div>
+                        <div class="desktop-icon game-icon" data-game="brickbreaker">
+                            <img src="./assets/img/brick-breaker-game.png" alt="Brick Breaker">
+                            <span>Brick Breaker</span>
+                        </div>
+                        <div class="desktop-icon game-icon" data-game="battlecity">
+                            <img src="./assets/img/battlecity-game.png" alt="Battle City">
+                            <span>Battle City</span>
+                        </div>
                     </div>
-                </div>
-                <div class="folder-content">
-                    <a class="desktop-icon" href="https://www.instagram.com/briobartech" aria-label="Instagram">
-                        <img src="./assets/img/social-instagram.png" alt="Instagram">
-                        <span>Instagram</span>
-                    </a>
-                    <a class="desktop-icon" href="https://x.com/BrioBartech" aria-label="X / Twitter">
-                        <img src="./assets/img/social-x.png" alt="X / Twitter">
-                        <span>X / Twitter</span>
-                    </a>
-                    <a class="desktop-icon" href="https://www.youtube.com/@briobartech" aria-label="YouTube">
-                        <img src="./assets/img/social-youtube.png" alt="YouTube">
-                        <span>YouTube</span>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Projects folder window -->
-            <div class="folder-window" id="projectsWindow" style="display:none;">
-                <div class="title-bar">
-                    <span class="title">Proyectos</span>
-                    <div class="title-actions">
-                        <button class="close-btn folder-maximize" data-window="projectsWindow" title="Maximizar">□</button>
-                        <button class="close-btn folder-close" data-window="projectsWindow">X</button>
+                    <!-- Contact folder window -->
+                    <div class="folder-window" id="contactWindow" style="display:none;">
+                        <div class="title-bar">
+                            <span class="title">Medios de contacto</span>
+                            <div class="title-actions">
+                                <button class="close-btn folder-maximize" data-window="contactWindow" title="Maximizar">⊡</button>
+                                <button class="close-btn folder-close" data-window="contactWindow">X</button>
+                            </div>
+                        </div>
+                        <div class="folder-content">
+                            <a class="desktop-icon" href="mailto:brio@briobartech.xyz" aria-label="Correo">
+                                <img src="./assets/img/contact-mail.png" alt="Correo">
+                                <span>Correo</span>
+                            </a>
+                            <a
+                                class="desktop-icon"
+                                href="https://wa.me/5492622316791"
+                                target="_blank"
+                                aria-label="WhatsApp"
+                            >
+                                <img src="./assets/img/contact-whatsapp.png" alt="WhatsApp">
+                                <span>WhatsApp</span>
+                            </a>
+                        </div>
                     </div>
-                </div>
-                <div class="folder-content projects-content">
-                    <div id="projectsEmpty" class="projects-empty">No hay contenido multimedia cargado.</div>
-                    <div id="projectsMediaGrid" class="projects-grid"></div>
-
-                    <div id="projectsViewer" class="projects-viewer" style="display:none;">
-                        <button id="projectsPrevBtn" class="projects-nav-btn" type="button" aria-label="Anterior">◀</button>
-                        <div id="projectsViewerBody" class="projects-viewer-body"></div>
-                        <button id="projectsNextBtn" class="projects-nav-btn" type="button" aria-label="Siguiente">▶</button>
-                        <div class="projects-viewer-footer">
-                            <span id="projectsViewerCaption"></span>
-                            <button id="projectsCloseViewerBtn" class="close-btn" type="button">X</button>
+                    <!-- Social folder window -->
+                    <div class="folder-window" id="socialWindow" style="display:none;">
+                        <div class="title-bar">
+                            <span class="title">Redes sociales</span>
+                            <div class="title-actions">
+                                <button class="close-btn folder-maximize" data-window="socialWindow" title="Maximizar">⊡</button>
+                                <button class="close-btn folder-close" data-window="socialWindow">X</button>
+                            </div>
+                        </div>
+                        <div class="folder-content">
+                            <a class="desktop-icon" href="https://www.instagram.com/briobartech" aria-label="Instagram">
+                                <img src="./assets/img/social-instagram.png" alt="Instagram">
+                                <span>Instagram</span>
+                            </a>
+                            <a class="desktop-icon" href="https://x.com/BrioBartech" aria-label="X / Twitter">
+                                <img src="./assets/img/social-x.png" alt="X / Twitter">
+                                <span>X / Twitter</span>
+                            </a>
+                            <a class="desktop-icon" href="https://www.youtube.com/@briobartech" aria-label="YouTube">
+                                <img src="./assets/img/social-youtube.png" alt="YouTube">
+                                <span>YouTube</span>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- Projects folder window -->
+                    <div class="folder-window" id="projectsWindow" style="display:none;">
+                        <div class="title-bar">
+                            <span class="title">Proyectos</span>
+                            <div class="title-actions">
+                                <button class="close-btn folder-maximize" data-window="projectsWindow" title="Maximizar">⊡</button>
+                                <button class="close-btn folder-close" data-window="projectsWindow">X</button>
+                            </div>
+                        </div>
+                        <div class="folder-content projects-content">
+                            <div id="projectsEmpty" class="projects-empty">
+                                No hay
+                            contenido multimedia cargado.
+                            </div>
+                            <div id="projectsMediaGrid" class="projects-grid"></div>
+                            <div id="projectsViewer" class="projects-viewer" style="display:none;">
+                                <button
+                                    id="projectsPrevBtn"
+                                    class="projects-nav-btn"
+                                    type="button"
+                                    aria-label="Anterior"
+                                >◀</button>
+                                <div id="projectsViewerBody" class="projects-viewer-body"></div>
+                                <button
+                                    id="projectsNextBtn"
+                                    class="projects-nav-btn"
+                                    type="button"
+                                    aria-label="Siguiente"
+                                >▶</button>
+                                <div class="projects-viewer-footer">
+                                    <span id="projectsViewerCaption"></span>
+                                    <button id="projectsCloseViewerBtn" class="close-btn" type="button">X</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Music Player Window -->
+                    <div class="folder-window" id="musicPlayerWindow" style="display:none;">
+                        <div class="title-bar">
+                            <span class="title">Music Player</span>
+                            <div class="title-actions">
+                                <button class="close-btn folder-maximize" data-window="musicPlayerWindow" title="Maximizar">⊡</button>
+                                <button class="close-btn folder-close" data-window="musicPlayerWindow">X</button>
+                            </div>
+                        </div>
+                        <div class="folder-content music-player-content">
+                            <div class="music-now-playing">
+                                <div class="music-meta-line">
+                                    <strong>Titulo:</strong>
+                                    <span id="musicPlayerTitle">-</span>
+                                </div>
+                                <div class="music-meta-line">
+                                    <strong>Artista:</strong>
+                                    <span id="musicPlayerArtist">-</span>
+                                </div>
+                                <div class="music-meta-line">
+                                    <strong>Album:</strong>
+                                    <span id="musicPlayerAlbum">-</span>
+                                </div>
+                                <div class="music-meta-line">
+                                    <strong>Tiempo:</strong>
+                                    <span id="musicPlayerTime">
+                                        --:-- /
+                                    --:--
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="music-controls-row">
+                                <button id="musicPlayerPrevBtn" type="button" aria-label="Anterior">◀◀</button>
+                                <button id="musicPlayerPlayPauseBtn" type="button" aria-label="Play/Pause">▶</button>
+                                <button id="musicPlayerNextBtn" type="button" aria-label="Siguiente">▶▶</button>
+                                <button id="musicPlayerShuffleBtn" type="button" aria-label="Alternar aleatorio" aria-pressed="true">RND</button>
+                            </div>
+                            <div class="music-volume-row">
+                                <label for="musicPlayerVolume">Volumen</label>
+                                <input
+                                    id="musicPlayerVolume"
+                                    type="range"
+                                    min="0"
+                                    max="100"
+                                    value="80"
+                                    step="1"
+                                >
+                                <span id="musicPlayerVolumeLabel">80%</span>
+                            </div>
+                            <div class="music-playlist-wrap">
+                                <div class="music-playlist-title">Playlist</div>
+                                <div id="musicPlayerList" class="music-playlist-list"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Snake Game Window -->
+                    <div class="folder-window" id="snakeWindow" style="display:none;">
+                        <div class="title-bar">
+                            <span class="title">Snake Game</span>
+                            <div class="title-actions">
+                                <button class="close-btn folder-maximize" data-window="snakeWindow" title="Maximizar">⊡</button>
+                                <button class="close-btn folder-close" data-window="snakeWindow">X</button>
+                            </div>
+                        </div>
+                        <div class="folder-content" style="background: #000080; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <div style="display: flex; gap: 12px; margin-top: 8px; align-items: center;">
+                                <div style="color: #fff; font-size: 12px; font-weight: 700;" id="snakeScore">Score: 0</div>
+                                <div style="display: flex; gap: 4px; align-items: center;">
+                                    <label style="color: #fff; font-size: 11px; font-weight: 700;">Dificultad:</label>
+                                    <button id="snakeDifficultyBtn" data-difficulty="easy" style="background: #c0c0c0; border-top: 1px solid #fff; border-left: 1px solid #fff; border-right: 1px solid #444; border-bottom: 1px solid #444; padding: 2px 8px; font-size: 11px; font-weight: 700; cursor: pointer; color: #111;">Fácil</button>
+                                </div>
+                            </div>
+                            <div id="snakeStartMenu" style="display: flex; gap: 6px; margin-top: 4px; align-items: center;">
+                                <button id="snakeStartEasyBtn" style="background: #c0c0c0; border-top: 1px solid #fff; border-left: 1px solid #fff; border-right: 1px solid #444; border-bottom: 1px solid #444; padding: 2px 8px; font-size: 11px; font-weight: 700; cursor: pointer; color: #111;">Facil</button>
+                                <button id="snakeStartNormalBtn" style="background: #c0c0c0; border-top: 1px solid #fff; border-left: 1px solid #fff; border-right: 1px solid #444; border-bottom: 1px solid #444; padding: 2px 8px; font-size: 11px; font-weight: 700; cursor: pointer; color: #111;">Normal</button>
+                                <button id="snakeStartPlayBtn" style="background: #9BBC0F; border: 1px solid #0F380F; padding: 2px 8px; font-size: 11px; font-weight: 700; cursor: pointer; color: #0F380F;">Jugar</button>
+                            </div>
+                            <canvas
+                                id="snakeCanvas"
+                                width="400"
+                                height="400"
+                                style="border: 2px solid #00FF00; margin: 8px; image-rendering: pixelated;"
+                            ></canvas>
+                            <div id="snakeGameOver" style="color: #FF0000; display: none; text-align: center; white-space: pre-line; font-weight: 700; margin-bottom: 8px;"></div>
+                        </div>
+                    </div>
+                    <!-- Racing Game Window -->
+                    <div class="folder-window" id="racingWindow" style="display:none;">
+                        <div class="title-bar">
+                            <span class="title">Racing Game</span>
+                            <div class="title-actions">
+                                <button class="close-btn folder-maximize" data-window="racingWindow" title="Maximizar">⊡</button>
+                                <button class="close-btn folder-close" data-window="racingWindow">X</button>
+                            </div>
+                        </div>
+                        <div class="folder-content" style="background: #228B22; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <div style="color: #fff; margin-top: 8px; font-size: 12px; font-weight: 700; text-shadow: 1px 1px 2px #000;" id="racingScore">Score: 0</div>
+                            <canvas
+                                id="racingCanvas"
+                                width="380"
+                                height="380"
+                                style="border: 2px solid #404040; margin: 8px; image-rendering: pixelated;"
+                            ></canvas>
+                            <div id="racingGameOver" style="color: #FF0000; display: none; text-align: center; white-space: pre-line; font-weight: 700; margin-bottom: 8px; text-shadow: 1px 1px 2px #000;"></div>
+                        </div>
+                    </div>
+                    <!-- Brick Breaker Game Window -->
+                    <div class="folder-window" id="brickBreakerWindow" style="display:none;">
+                        <div class="title-bar">
+                            <span class="title">Brick Breaker</span>
+                            <div class="title-actions">
+                                <button class="close-btn folder-maximize" data-window="brickBreakerWindow" title="Maximizar">⊡</button>
+                                <button class="close-btn folder-close" data-window="brickBreakerWindow">X</button>
+                            </div>
+                        </div>
+                        <div class="folder-content" style="background: #9BBC0F; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <div style="color: #0F380F; margin-top: 8px; font-size: 12px; font-weight: 700;" id="brickBreakerScore">Score: 0</div>
+                            <canvas
+                                id="brickBreakerCanvas"
+                                width="400"
+                                height="400"
+                                style="border: 2px solid #0F380F; margin: 8px; image-rendering: pixelated;"
+                            ></canvas>
+                            <div id="brickBreakerGameOver" style="color: #0F380F; display: none; text-align: center; white-space: pre-line; font-weight: 700; margin-bottom: 8px;"></div>
+                        </div>
+                    </div>
+                    <!-- Battle City Game Window -->
+                    <div class="folder-window" id="battleCityWindow" style="display:none;">
+                        <div class="title-bar">
+                            <span class="title">Battle City</span>
+                            <div class="title-actions">
+                                <button class="close-btn folder-maximize" data-window="battleCityWindow" title="Maximizar">⊡</button>
+                                <button class="close-btn folder-close" data-window="battleCityWindow">X</button>
+                            </div>
+                        </div>
+                        <div class="folder-content" style="background: #9BBC0F; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <div style="color: #0F380F; margin-top: 8px; font-size: 12px; font-weight: 700;" id="battleCityScore">Score: 0</div>
+                            <canvas
+                                id="battleCityCanvas"
+                                width="400"
+                                height="400"
+                                style="border: 2px solid #0F380F; margin: 8px; image-rendering: pixelated;"
+                            ></canvas>
+                            <div id="battleCityGameOver" style="color: #0F380F; display: none; text-align: center; white-space: pre-line; font-weight: 700; margin-bottom: 8px;"></div>
+                        </div>
+                    </div>
+                    <div class="modal-taskbar">
+                        <div class="taskbar-logo">
+                            <img src="./assets/img/briOS.png" alt="Logo">
+                        </div>
+                        <div class="taskbar-buttons">
+                            <button
+                                id="toggleMusicBtn"
+                                class="taskbar-sound-btn"
+                                type="button"
+                                data-enabled="true"
+                                aria-pressed="true"
+                                aria-label="Alternar musica"
+                            >
+                                <img id="soundIcon" src="./assets/img/sound-on.png" alt="Sonido activo">
+                                <span id="soundLabel">Sonido: ON</span>
+                            </button>
+                            <button
+                                id="toggleLanguageBtn"
+                                class="taskbar-language-btn"
+                                type="button"
+                                data-language="es"
+                                aria-label="Cambiar idioma"
+                            >
+                                <span id="languageLabel">ES</span>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Music Player Window -->
-            <div class="folder-window" id="musicPlayerWindow" style="display:none;">
+            <div id="startOverlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(12, 16, 24, 0.18); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:9999; display:flex; justify-content:center; align-items:center;">
+                <button id="enterButton" style="width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,0.82); color:black; font-size:20px; border:1px solid rgba(255,255,255,0.9); cursor:pointer;">Entrar</button>
+            </div>
+            <div id="termsModal" style="display:none; position:fixed; top:10%; left:10%; width:80%; height:80%; z-index:1000;" class="modal-window">
                 <div class="title-bar">
-                    <span class="title">Music Player</span>
-                    <div class="title-actions">
-                        <button class="close-btn folder-maximize" data-window="musicPlayerWindow" title="Maximizar">□</button>
-                        <button class="close-btn folder-close" data-window="musicPlayerWindow">X</button>
-                    </div>
+                    <span class="title">Términos y condiciones</span>
+                    <button class="close-btn" onclick="document.getElementById('termsModal').style.display='none';">X</button>
                 </div>
-                <div class="folder-content music-player-content">
-                    <div class="music-now-playing">
-                        <div class="music-meta-line"><strong>Titulo:</strong> <span id="musicPlayerTitle">-</span></div>
-                        <div class="music-meta-line"><strong>Artista:</strong> <span id="musicPlayerArtist">-</span></div>
-                        <div class="music-meta-line"><strong>Album:</strong> <span id="musicPlayerAlbum">-</span></div>
-                        <div class="music-meta-line"><strong>Tiempo:</strong> <span id="musicPlayerTime">--:-- / --:--</span></div>
-                    </div>
-                    <div class="music-controls-row">
-                        <button id="musicPlayerPrevBtn" type="button" aria-label="Anterior">◀◀</button>
-                        <button id="musicPlayerPlayPauseBtn" type="button" aria-label="Play/Pause">▶</button>
-                        <button id="musicPlayerNextBtn" type="button" aria-label="Siguiente">▶▶</button>
-                    </div>
-                    <div class="music-volume-row">
-                        <label for="musicPlayerVolume">Volumen</label>
-                        <input id="musicPlayerVolume" type="range" min="0" max="100" value="80" step="1" />
-                        <span id="musicPlayerVolumeLabel">80%</span>
-                    </div>
-                    <div class="music-playlist-wrap">
-                        <div class="music-playlist-title">Playlist</div>
-                        <div id="musicPlayerList" class="music-playlist-list"></div>
-                    </div>
+                <div class="content">
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
+                    do eiusmod tempor incididunt ut labore et dolore magna
+                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                    ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    Duis aute irure dolor in reprehenderit in voluptate velit
+                    esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+                    occaecat cupidatat non proident, sunt in culpa qui officia
+                    deserunt mollit anim id est laborum.
+                    </p>
                 </div>
             </div>
-
-            <!-- Snake Game Window -->
-            <div class="folder-window" id="snakeWindow" style="display:none;">
+            <div id="certificateModal" class="modal-window certificate-modal" style="display:none;">
                 <div class="title-bar">
-                    <span class="title">Snake Game</span>
-                    <div class="title-actions">
-                        <button class="close-btn folder-maximize" data-window="snakeWindow" title="Maximizar">□</button>
-                        <button class="close-btn folder-close" data-window="snakeWindow">X</button>
-                    </div>
+                    <span class="title">Ficha de Personaje</span>
+                    <button id="closeCertificateModalBtn" class="close-btn" type="button">X</button>
                 </div>
-                <div class="folder-content" style="background: #000080; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                    <div style="display: flex; gap: 12px; margin-top: 8px; align-items: center;">
-                        <div style="color: #fff; font-size: 12px; font-weight: 700;" id="snakeScore">Score: 0</div>
-                        <div style="display: flex; gap: 4px; align-items: center;">
-                            <label style="color: #fff; font-size: 11px; font-weight: 700;">Dificultad:</label>
-                            <button id="snakeDifficultyBtn" data-difficulty="easy" style="background: #c0c0c0; border-top: 1px solid #fff; border-left: 1px solid #fff; border-right: 1px solid #444; border-bottom: 1px solid #444; padding: 2px 8px; font-size: 11px; font-weight: 700; cursor: pointer; color: #111;">Fácil</button>
+                <div class="content certificate-content">
+                    <div class="certificate-profile-panel">
+                        <div class="certificate-profile-frame">
+                            <img src="./assets/img/brio-pfp.png" alt="Perfil Brio">
+                        </div>
+                        <div class="certificate-profile-badge">
+                            <div id="certificateProfileName" class="certificate-profile-name">Brio</div>
+                            <div id="certificateProfileLevel" class="certificate-profile-level">Nivel --</div>
+                            <div class="certificate-exp-wrap" aria-label="Experiencia del perfil">
+                                <div class="certificate-exp-track">
+                                    <span id="certificateExpFill" class="certificate-exp-fill" style="width:0%;"></span>
+                                </div>
+                                <div id="certificateExpText" class="certificate-exp-text">EXP 0/100</div>
+                            </div>
+                        </div>
+                        <button id="toggleBrioWorkingBtn" class="certificate-profile-toggle" type="button">Modo Brio: Working</button>
+                    </div>
+                    <div class="certificate-sheet">
+                        <div class="certificate-sheet-block">
+                            <div class="certificate-sheet-title">Bio</div>
+                            <div id="certificateBio" class="certificate-sheet-value">Pendiente de completar.</div>
+                        </div>
+                        <div class="certificate-sheet-block">
+                            <div class="certificate-sheet-title">Epitetos</div>
+                            <ul id="certificateStats" class="certificate-sheet-list">
+                                <li>Epiteto 1</li>
+                                <li>Epiteto 2</li>
+                            </ul>
+                        </div>
+                        <div id="certificateSkillsBlock" class="certificate-sheet-block">
+                            <div class="certificate-sheet-title">Skills</div>
+                            <ul id="certificateSkills" class="certificate-sheet-list">
+                                <li>Skill 1: --</li>
+                                <li>Skill 2: --</li>
+                                <li>Skill 3: --</li>
+                            </ul>
+                        </div>
+                        <div class="certificate-sheet-block">
+                            <div class="certificate-sheet-title">Logros</div>
+                            <ul id="certificateAchievements" class="certificate-sheet-list">
+                                <li>Logro 1: --</li>
+                                <li>Logro 2: --</li>
+                            </ul>
                         </div>
                     </div>
-                    <div id="snakeStartMenu" style="display: flex; gap: 6px; margin-top: 4px; align-items: center;">
-                        <button id="snakeStartEasyBtn" style="background: #c0c0c0; border-top: 1px solid #fff; border-left: 1px solid #fff; border-right: 1px solid #444; border-bottom: 1px solid #444; padding: 2px 8px; font-size: 11px; font-weight: 700; cursor: pointer; color: #111;">Facil</button>
-                        <button id="snakeStartNormalBtn" style="background: #c0c0c0; border-top: 1px solid #fff; border-left: 1px solid #fff; border-right: 1px solid #444; border-bottom: 1px solid #444; padding: 2px 8px; font-size: 11px; font-weight: 700; cursor: pointer; color: #111;">Normal</button>
-                        <button id="snakeStartPlayBtn" style="background: #9BBC0F; border: 1px solid #0F380F; padding: 2px 8px; font-size: 11px; font-weight: 700; cursor: pointer; color: #0F380F;">Jugar</button>
-                    </div>
-                    <canvas id="snakeCanvas" width="400" height="400" style="border: 2px solid #00FF00; margin: 8px; image-rendering: pixelated;"></canvas>
-                    <div id="snakeGameOver" style="color: #FF0000; display: none; text-align: center; white-space: pre-line; font-weight: 700; margin-bottom: 8px;"></div>
                 </div>
             </div>
-
-            <!-- Racing Game Window -->
-            <div class="folder-window" id="racingWindow" style="display:none;">
-                <div class="title-bar">
-                    <span class="title">Racing Game</span>
-                    <div class="title-actions">
-                        <button class="close-btn folder-maximize" data-window="racingWindow" title="Maximizar">□</button>
-                        <button class="close-btn folder-close" data-window="racingWindow">X</button>
-                    </div>
-                </div>
-                <div class="folder-content" style="background: #228B22; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                    <div style="color: #fff; margin-top: 8px; font-size: 12px; font-weight: 700; text-shadow: 1px 1px 2px #000;" id="racingScore">Score: 0</div>
-                    <canvas id="racingCanvas" width="380" height="380" style="border: 2px solid #404040; margin: 8px; image-rendering: pixelated;"></canvas>
-                    <div id="racingGameOver" style="color: #FF0000; display: none; text-align: center; white-space: pre-line; font-weight: 700; margin-bottom: 8px; text-shadow: 1px 1px 2px #000;"></div>
-                </div>
-            </div>
-
-            <!-- Brick Breaker Game Window -->
-            <div class="folder-window" id="brickBreakerWindow" style="display:none;">
-                <div class="title-bar">
-                    <span class="title">Brick Breaker</span>
-                    <div class="title-actions">
-                        <button class="close-btn folder-maximize" data-window="brickBreakerWindow" title="Maximizar">□</button>
-                        <button class="close-btn folder-close" data-window="brickBreakerWindow">X</button>
-                    </div>
-                </div>
-                <div class="folder-content" style="background: #9BBC0F; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                    <div style="color: #0F380F; margin-top: 8px; font-size: 12px; font-weight: 700;" id="brickBreakerScore">Score: 0</div>
-                    <canvas id="brickBreakerCanvas" width="400" height="400" style="border: 2px solid #0F380F; margin: 8px; image-rendering: pixelated;"></canvas>
-                    <div id="brickBreakerGameOver" style="color: #0F380F; display: none; text-align: center; white-space: pre-line; font-weight: 700; margin-bottom: 8px;"></div>
-                </div>
-            </div>
-
-            <!-- Battle City Game Window -->
-            <div class="folder-window" id="battleCityWindow" style="display:none;">
-                <div class="title-bar">
-                    <span class="title">Battle City</span>
-                    <div class="title-actions">
-                        <button class="close-btn folder-maximize" data-window="battleCityWindow" title="Maximizar">□</button>
-                        <button class="close-btn folder-close" data-window="battleCityWindow">X</button>
-                    </div>
-                </div>
-                <div class="folder-content" style="background: #9BBC0F; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                    <div style="color: #0F380F; margin-top: 8px; font-size: 12px; font-weight: 700;" id="battleCityScore">Score: 0</div>
-                    <canvas id="battleCityCanvas" width="400" height="400" style="border: 2px solid #0F380F; margin: 8px; image-rendering: pixelated;"></canvas>
-                    <div id="battleCityGameOver" style="color: #0F380F; display: none; text-align: center; white-space: pre-line; font-weight: 700; margin-bottom: 8px;"></div>
-                </div>
-            </div>
-
-            <div class="modal-taskbar">
-                <div class="taskbar-logo">
-                    <img src="./assets/img/briOS.png" alt="Logo">
-                </div>
-                <div class="taskbar-buttons">
-                    <button id="toggleMusicBtn" class="taskbar-sound-btn" type="button" data-enabled="true" aria-pressed="true" aria-label="Alternar musica">
-                        <img id="soundIcon" src="./assets/img/sound-on.png" alt="Sonido activo">
-                        <span id="soundLabel">Sonido: ON</span>
-                    </button>
-                    <button id="toggleLanguageBtn" class="taskbar-language-btn" type="button" data-language="es" aria-label="Cambiar idioma">
-                        <span id="languageLabel">ES</span>
-                    </button>
-                </div>
-            </div>
-    </div>
-   </div>
-   <div id="startOverlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(12, 16, 24, 0.18); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:9999; display:flex; justify-content:center; align-items:center;">
-       <button id="enterButton" style="width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,0.82); color:black; font-size:20px; border:1px solid rgba(255,255,255,0.9); cursor:pointer;">Entrar</button>
-   </div>   <div id="termsModal" style="display:none; position:fixed; top:10%; left:10%; width:80%; height:80%; z-index:1000;" class="modal-window">
-       <div class="title-bar">
-           <span class="title">Términos y condiciones</span>
-           <button class="close-btn" onclick="document.getElementById('termsModal').style.display='none';">X</button>
-       </div>
-       <div class="content">
-           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-       </div>
-   </div>   <audio id="backgroundMusic" src="./assets/music/to my future love.mp3" loop preload="auto"></audio>
-    
-    
-</body>
-<script type="module" src="main.js"></script>
-</html>
-
+            <audio
+                id="backgroundMusic"
+                src="./assets/music/codeman.mp3"
+                loop
+                preload="auto"
+            ></audio>
+        </body>
+        <script type="module" src="main.js"></script>
+    </html>
