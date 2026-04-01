@@ -325,6 +325,7 @@ languageToggleBtn.addEventListener("click", () => {
 document.getElementById("enterButton").addEventListener("click", () => {
   const hasVisitedBefore = localStorage.getItem("hasVisited");
   const startOverlay = document.getElementById("startOverlay");
+  const nowPlayingWidget = document.getElementById('nowPlayingWidget');
 
   mobileNavigation.requestGyroscopePermission();
 
@@ -337,6 +338,10 @@ document.getElementById("enterButton").addEventListener("click", () => {
     setTimeout(() => {
       startOverlay.style.display = "none";
     }, 450);
+  }
+
+  if (nowPlayingWidget) {
+    nowPlayingWidget.style.display = 'flex';
   }
 
   // Brio animation on enter

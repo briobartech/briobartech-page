@@ -62,14 +62,19 @@ export function initMobileNavigation() {
     gyroBaseline: 0,
     gyroReady: false,
     permissionRequested: false,
+    gyroManuallyDisabled: false,
   };
 
   const resetBtn = document.createElement('button');
   resetBtn.type = 'button';
   resetBtn.className = 'gyro-reset-btn';
-  resetBtn.textContent = 'Reset Gyro';
+  resetBtn.textContent = 'Resetear gyro';
   resetBtn.style.display = 'none';
   document.body.appendChild(resetBtn);
+
+  function syncGyroButtonLabel() {
+    resetBtn.textContent = state.gyroReady ? 'Resetear gyro' : 'Encender gyro';
+  }
 
   function clampOffset(value) {
     return Math.max(0, Math.min(state.maxOffset, value));
@@ -152,6 +157,14 @@ export function initMobileNavigation() {
     state.hasGyroBaseline = false;
   }
 
+  function disableGyroFromTouch() {
+    if (!state.gyroReady) return;
+    state.gyroReady = false;
+    state.gyroManuallyDisabled = true;
+    resetGyroBaseline();
+    syncGyroButtonLabel();
+  }
+
   function getHorizontalTilt(event) {
     const screenOrientation = window.screen && window.screen.orientation
       ? window.screen.orientation.angle
@@ -203,6 +216,11 @@ export function initMobileNavigation() {
     if (event.touches.length !== 1) return;
 
     const deltaX = event.touches[0].clientX - state.touchStartX;
+
+    if (Math.abs(deltaX) > 6) {
+      disableGyroFromTouch();
+    }
+
     state.targetOffset = clampOffset(state.touchStartOffset - deltaX);
     event.preventDefault();
   }
@@ -245,10 +263,13 @@ export function initMobileNavigation() {
     }
 
     state.gyroReady = granted;
+    state.gyroManuallyDisabled = !granted ? state.gyroManuallyDisabled : false;
 
     if (state.gyroReady) {
       resetGyroBaseline();
     }
+
+    syncGyroButtonLabel();
 
     return state.gyroReady;
   }
@@ -260,12 +281,13 @@ export function initMobileNavigation() {
     event.preventDefault();
     if (hasModalOverlay()) return;
 
-    resetGyroBaseline();
-    state.targetOffset = clampOffset(state.maxOffset / 2);
-
     if (!state.gyroReady) {
       requestGyroscopePermission();
+      return;
     }
+
+    resetGyroBaseline();
+    state.targetOffset = clampOffset(state.maxOffset / 2);
   });
 
   refreshBounds(false);
@@ -288,10 +310,12 @@ export function initMobileNavigation() {
   document.addEventListener('touchend', onTouchEnd, { passive: true });
   document.addEventListener('touchcancel', onTouchEnd, { passive: true });
   document.addEventListener('touchend', () => {
-    if (!state.permissionRequested && !state.gyroReady && !hasBlockingOverlay()) {
+    if (!state.permissionRequested && !state.gyroReady && !state.gyroManuallyDisabled && !hasBlockingOverlay()) {
       requestGyroscopePermission();
     }
   }, { passive: true });
+
+  syncGyroButtonLabel();
 
   return {
     requestGyroscopePermission,

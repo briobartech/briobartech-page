@@ -1573,7 +1573,8 @@ body.is-mobile-horizontal-nav .scene {
     bottom: calc(10px + env(safe-area-inset-bottom));
     transform: translateX(-50%);
     z-index: 6900;
-    min-width: 112px;
+    min-width: 136px;
+    padding: 0 12px;
     height: 34px;
     border: 1px solid #1a2e56;
     border-radius: 18px;
@@ -1999,9 +2000,13 @@ body.is-mobile-horizontal-nav .scene {
     grid-template-columns: 1fr;
     gap: 12px;
     min-height: 0;
+    max-height: none;
+    height: calc(100dvh - max(16px, env(safe-area-inset-top) + env(safe-area-inset-bottom)) - 54px);
     align-content: start;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
+    padding-bottom: max(14px, calc(env(safe-area-inset-bottom) + 8px));
+    box-sizing: border-box;
   }
 
   #certificateModal .certificate-profile-panel {
