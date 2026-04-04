@@ -7,10 +7,10 @@ export const datos = {
     role: 'Artista "El demonio de Udev"',
     epithets: [
         'El demonio de Udev',
-        'Japones',
+        'Japones', 'Bukowski reader',
+
         'El frio farfecht',
-        'Bukowski reader',
-        'Dimitri Finds Out', ],
+        'Dimitri Finds Out',],
     studies: ["Tecnicatura Superior en Desarrollo de Software",
         "Tecnicatura superior en Computación y Redes"
     ],
