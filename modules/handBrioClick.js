@@ -188,11 +188,6 @@ export function checkBrioStatus() {
   applyBrioWorkingVisualState();
 }
 
-export function showBrioFrontIfIdle() {
-  if (isBrioWorking || !brio[0]) return;
-  brio[0].src = './assets/img/brio-front.png';
-}
-
 export async function handleBrioClick(e) {
   if (isMessageActive) {
     return;

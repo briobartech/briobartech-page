@@ -2,7 +2,6 @@ import { checkBrioStatus } from "./modules/handBrioClick.js";
 import { handleBrioClick } from "./modules/handBrioClick.js";
 import { getIsBrioWorking } from "./modules/handBrioClick.js";
 import { resetBusyInterruptions } from "./modules/handBrioClick.js";
-import { showBrioFrontIfIdle } from "./modules/handBrioClick.js";
 import { closeOptionsModal, getUniqueTurnOffMusicPhrase } from "./modules/closeOptionsModal.js";
 import { handleDesktopClick } from "./modules/handleDesktopClick.js";
 import { state } from "./modules/state.js";
@@ -57,7 +56,6 @@ if (optionsModalCloseBtn) {
 portalModalsToViewport();
 initMobileGameControls();
 checkBrioStatus();
-showBrioFrontIfIdle();
 
 const actions = {
   brio: handleBrioClick,
@@ -324,20 +322,14 @@ languageToggleBtn.addEventListener("click", () => {
   resetBusyInterruptions();
 });
 
-document.getElementById("enterButton").addEventListener("click", async () => {
+document.getElementById("enterButton").addEventListener("click", () => {
   const hasVisitedBefore = localStorage.getItem("hasVisited");
   const startOverlay = document.getElementById("startOverlay");
   const nowPlayingWidget = document.getElementById('nowPlayingWidget');
-  const brio = document.querySelector(".brio");
-  const isWorkingNow = getIsBrioWorking();
 
   mobileNavigation.requestGyroscopePermission();
 
-  if (isWorkingNow) {
-    checkBrioStatus();
-  } else if (brio) {
-    brio.src = "./assets/img/brio-front.png";
-  }
+  checkBrioStatus();
 
   if (state.musicEnabled) {
     music.play();
@@ -363,19 +355,13 @@ document.getElementById("enterButton").addEventListener("click", async () => {
   }
 
   const randomGreeting =
-    source.length > 0 ? source[Math.floor(Math.random() * source.length)] : "";
+    source.length > 0
+      ? source[Math.floor(Math.random() * source.length)]
+      : (window.languageState.current === "es" ? "Bienvenido de nuevo." : "Welcome back.");
 
-  if (randomGreeting) {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    await showMessage(randomGreeting);
-  }
-
-  if (!isWorkingNow && brio) {
-    brio.src = "./assets/img/brio-back-to-windows.gif";
-    setTimeout(() => {
-      brio.src = "./assets/img/brio-back.png";
-    }, 500);
-  }
+  setTimeout(() => {
+    showMessage(randomGreeting);
+  }, 500);
 
   // Mark as visited
   localStorage.setItem("hasVisited", "true");
