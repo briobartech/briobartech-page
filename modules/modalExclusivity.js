@@ -19,6 +19,11 @@ export function closeInteractiveModals(exceptId = '') {
     if (id === 'pdfViewerModal') {
       const frame = document.getElementById('pdfViewerFrame');
       if (frame) frame.src = '';
+
+      const paper = modal.querySelector('.pdf-paper');
+      if (paper && document.fullscreenElement === paper) {
+        document.exitFullscreen().catch(() => {});
+      }
     }
 
     if (id === 'optionsModal') {

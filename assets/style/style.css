@@ -324,6 +324,19 @@ body.is-mobile-horizontal-nav .scene {
   color: #2d2a22;
 }
 
+.pdf-header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pdf-fullscreen-btn {
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+  padding: 0;
+}
+
 .pdf-paper-body {
   flex: 1;
   padding: 12px;
@@ -334,6 +347,19 @@ body.is-mobile-horizontal-nav .scene {
   height: 100%;
   border: 1px solid #c2b59b;
   background: #fff;
+}
+
+.pdf-paper:fullscreen {
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  max-height: none;
+  border: none;
+  box-shadow: none;
+}
+
+.pdf-paper:fullscreen .pdf-paper-body {
+  padding: 8px;
 }
 
 .foco {
@@ -1169,6 +1195,12 @@ body.is-mobile-horizontal-nav .scene {
   flex-direction: column;
 }
 
+#projectsWindow {
+  width: min(860px, calc(100% - 80px));
+  min-height: 420px;
+  height: clamp(380px, 72vh, 680px);
+}
+
 .folder-window .title-bar {
   background: linear-gradient(90deg, #0a246a 0%, #2359c6 100%);
   padding: 5px 8px;
@@ -1645,9 +1677,56 @@ body.is-mobile-horizontal-nav .scene {
 
 .projects-content {
   position: relative;
-  min-height: 300px;
+  min-height: 0;
   background: #ffffff;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  gap: 0;
+}
+
+.projects-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-bottom: 1px solid #d6d6d6;
+  background: linear-gradient(180deg, #f8f8f8 0%, #ececec 100%);
+}
+
+.projects-filter-label {
+  font-size: 11px;
+  color: #222;
+}
+
+.projects-filter-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.projects-filter-btn {
+  min-height: 22px;
+  padding: 0 8px;
+  border-top: 1px solid #fff;
+  border-left: 1px solid #fff;
+  border-right: 1px solid #5c5c5c;
+  border-bottom: 1px solid #5c5c5c;
+  background: #c9c9c9;
+  color: #111;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.projects-filter-btn.is-active {
+  border-top: 1px solid #5c5c5c;
+  border-left: 1px solid #5c5c5c;
+  border-right: 1px solid #fff;
+  border-bottom: 1px solid #fff;
+  background: #b8c8ff;
+  color: #0b1f66;
+  font-weight: 700;
 }
 
 .projects-empty {
@@ -1661,6 +1740,10 @@ body.is-mobile-horizontal-nav .scene {
   flex-wrap: wrap;
   gap: 8px;
   align-content: flex-start;
+  padding: 8px;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
 }
 
 .projects-item {
@@ -2177,6 +2260,11 @@ body.is-mobile-horizontal-nav .scene {
   #contactWindow .folder-content,
   #socialWindow .folder-content {
     align-content: flex-start;
+  }
+
+  #projectsWindow {
+    height: auto;
+    min-height: 0;
   }
 
   #snakeCanvas,

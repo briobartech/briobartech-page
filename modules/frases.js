@@ -43,14 +43,12 @@ pero si a mí me importó tan poco como para tardar tres años,
     `Hay tres palabras que no hay que olvidar para no morir de hambre… “arriba las manos”`,
     `Nunca te conformes, y ten un problema o dos para cada solución.`,
     `A mi padre le debo mucho, al igual que a mi madre, a mis hermanos y a algún que otro amigo… por eso a veces abro comisiones.`,
-    `Mis padres me decían que la única satisfacción que les dí fue 9 meses antes de nacer… \n pero si yo ni nacía aún`,
+    `Mis padres me decían que la única satisfacción que les dí fue 9 meses antes de nacer… \n pero si yo no nacía aún jsjs`,
     `Todo cambia en este mundo… un día salí de mi casa dejando una novia, cuando volví encontré una cuñada.`,
-    `Siempre voy tranquilo, si nadie me está esperando ¿para qué me voy a apurar? \n ¿Eh? \n
-¿¿Qué tengo comisiones pendientes??\n Supongo que alguien me está esperando...`,`Me gusta pensar en el último dinosaurio en pie, viendo a sus hermanos caídos, y dando su último rugido al viento.\n Algún día alguien pensará en el último humano gritando "¡Anashe!".`
+    ,`Me gusta pensar en el último dinosaurio en pie, viendo a sus hermanos caídos, y dando su último rugido al viento.\n Algún día alguien pensará en el último humano gritando "¡Anashe!".`
 
   ],
   philosophic: [
-    `Byung-chul Han dice que aburrirse hoy en día es un acto revolucionario. ¡Revolucionemos pues!`,
     `Aún cuando no me escuchas sigo diciendo cosas`,
     `Si algún día estás resentido con un ex, puedes llamarle ‘lágrima de mar’, porque no tiene corazón ni cerebro. Y puedes sentenciar “¿Qué es una lágrima en el mar? ¡Exacto! Nada”`,
     ,

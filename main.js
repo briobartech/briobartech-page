@@ -2,6 +2,7 @@ import { checkBrioStatus } from "./modules/handBrioClick.js";
 import { handleBrioClick } from "./modules/handBrioClick.js";
 import { getIsBrioWorking } from "./modules/handBrioClick.js";
 import { resetBusyInterruptions } from "./modules/handBrioClick.js";
+import { showBrioFrontIfIdle } from "./modules/handBrioClick.js";
 import { closeOptionsModal, getUniqueTurnOffMusicPhrase } from "./modules/closeOptionsModal.js";
 import { handleDesktopClick } from "./modules/handleDesktopClick.js";
 import { state } from "./modules/state.js";
@@ -56,6 +57,7 @@ if (optionsModalCloseBtn) {
 portalModalsToViewport();
 initMobileGameControls();
 checkBrioStatus();
+showBrioFrontIfIdle();
 
 const actions = {
   brio: handleBrioClick,
@@ -322,14 +324,21 @@ languageToggleBtn.addEventListener("click", () => {
   resetBusyInterruptions();
 });
 
-document.getElementById("enterButton").addEventListener("click", () => {
+document.getElementById("enterButton").addEventListener("click", async () => {
   const hasVisitedBefore = localStorage.getItem("hasVisited");
   const startOverlay = document.getElementById("startOverlay");
   const nowPlayingWidget = document.getElementById('nowPlayingWidget');
+  const brio = document.querySelector(".brio");
+  const isWorkingNow = getIsBrioWorking();
 
   mobileNavigation.requestGyroscopePermission();
 
-  checkBrioStatus();
+  if (isWorkingNow) {
+    checkBrioStatus();
+  } else if (brio) {
+    brio.src = "./assets/img/brio-front.png";
+  }
+
   if (state.musicEnabled) {
     music.play();
   }
@@ -342,17 +351,6 @@ document.getElementById("enterButton").addEventListener("click", () => {
 
   if (nowPlayingWidget) {
     nowPlayingWidget.style.display = 'flex';
-  }
-
-  // Brio animation on enter
-  const brio = document.querySelector(".brio");
-  if (!getIsBrioWorking()) {
-    setTimeout(() => {
-      brio.src = "./assets/img/brio-back-to-windows.gif";
-    }, 2000);
-    setTimeout(() => {
-      brio.src = "./assets/img/brio-back.png";
-    }, 2500);
   }
 
   const greetings = window.languageState.frases.greetings || [];
@@ -368,8 +366,14 @@ document.getElementById("enterButton").addEventListener("click", () => {
     source.length > 0 ? source[Math.floor(Math.random() * source.length)] : "";
 
   if (randomGreeting) {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    await showMessage(randomGreeting);
+  }
+
+  if (!isWorkingNow && brio) {
+    brio.src = "./assets/img/brio-back-to-windows.gif";
     setTimeout(() => {
-      showMessage(randomGreeting);
+      brio.src = "./assets/img/brio-back.png";
     }, 500);
   }
 
@@ -382,18 +386,42 @@ initFolders();
 initBookshelf();
 initCertificateModal();
 
-// Proyectos multimedia: pasa aqui tu array de rutas.
-const pathProject = "./assets/img/projects/";
-const projectsFolder = initProjectsFolder([
-  `${pathProject}[sin nombre].png`,
-  `${pathProject}Ashley.png`,
-  `${pathProject}collabaishacolor2.png`,
-  `${pathProject}desafio-pio.png`,
-  `${pathProject}f-14.mp4`,
-  `${pathProject}spoooky-pfp-ps-v2`,
-]);
+const projectsFolder = initProjectsFolder([]);
+
+async function loadProjectsManifest() {
+  try {
+    const response = await fetch('./assets/img/projects/manifest.json', { cache: 'no-store' });
+    if (!response.ok) {
+      throw new Error(`No se pudo cargar el manifiesto (${response.status})`);
+    }
+
+    const manifest = await response.json();
+    const basePath = './assets/img/projects/';
+    const mediaItems = Array.isArray(manifest)
+      ? manifest
+          .filter((item) => item && typeof item.file === 'string')
+          .map((item) => ({
+            path: `${basePath}${item.file}`,
+            name: item.name || item.file,
+            category: item.category || 'sin-categoria',
+          }))
+      : [];
+
+    projectsFolder.setMediaItems(mediaItems);
+  } catch (error) {
+    console.error('Error al cargar proyectos:', error);
+    projectsFolder.setMediaItems([]);
+  }
+}
+
+loadProjectsManifest();
 
 // Permite recargar contenido desde consola: window.setProjectsMedia([...paths])
 window.setProjectsMedia = (paths) => {
   projectsFolder.setMediaPaths(paths);
+};
+
+// Permite recargar contenido desde consola: window.setProjectsManifest([...items])
+window.setProjectsManifest = (items) => {
+  projectsFolder.setMediaItems(items);
 };

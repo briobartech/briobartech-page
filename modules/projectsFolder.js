@@ -27,6 +27,7 @@ function getFileName(path) {
 export function initProjectsFolder(initialPaths = []) {
   const grid = document.getElementById('projectsMediaGrid');
   const empty = document.getElementById('projectsEmpty');
+  const projectsContent = document.querySelector('#projectsWindow .projects-content');
   const viewer = document.getElementById('projectsViewer');
   const viewerBody = document.getElementById('projectsViewerBody');
   const caption = document.getElementById('projectsViewerCaption');
@@ -35,9 +36,10 @@ export function initProjectsFolder(initialPaths = []) {
   const closeBtn = document.getElementById('projectsCloseViewerBtn');
   const viewerFooter = viewer ? viewer.querySelector('.projects-viewer-footer') : null;
 
-  if (!grid || !viewer || !viewerBody || !caption || !prevBtn || !nextBtn || !closeBtn || !empty) {
+  if (!grid || !viewer || !viewerBody || !caption || !prevBtn || !nextBtn || !closeBtn || !empty || !projectsContent) {
     return {
       setMediaPaths: () => {},
+      setMediaItems: () => {},
     };
   }
 
@@ -46,8 +48,10 @@ export function initProjectsFolder(initialPaths = []) {
     document.body.appendChild(viewer);
   }
 
-  let items = [];
+  let allItems = [];
+  let visibleItems = [];
   let currentIndex = -1;
+  let activeCategory = 'all';
   const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
   const MIN_ZOOM = 1;
   const MAX_ZOOM = 4;
@@ -107,6 +111,20 @@ export function initProjectsFolder(initialPaths = []) {
   topActions.appendChild(closeBtn);
   viewer.appendChild(topActions);
 
+  const toolbar = document.createElement('div');
+  toolbar.className = 'projects-toolbar';
+
+  const filterLabel = document.createElement('span');
+  filterLabel.className = 'projects-filter-label';
+  filterLabel.textContent = 'Categoria:';
+
+  const filterContainer = document.createElement('div');
+  filterContainer.className = 'projects-filter-buttons';
+
+  toolbar.appendChild(filterLabel);
+  toolbar.appendChild(filterContainer);
+  projectsContent.insertBefore(toolbar, empty);
+
   if (viewerFooter) {
     viewerFooter.insertBefore(controls, caption);
   }
@@ -116,7 +134,7 @@ export function initProjectsFolder(initialPaths = []) {
   }
 
   function isImageSelected() {
-    return currentIndex >= 0 && currentIndex < items.length && items[currentIndex].type === 'image';
+    return currentIndex >= 0 && currentIndex < visibleItems.length && visibleItems[currentIndex].type === 'image';
   }
 
   function canPanImage() {
@@ -249,9 +267,9 @@ export function initProjectsFolder(initialPaths = []) {
   }
 
   function renderCurrentMedia() {
-    if (currentIndex < 0 || currentIndex >= items.length) return;
+    if (currentIndex < 0 || currentIndex >= visibleItems.length) return;
 
-    const current = items[currentIndex];
+    const current = visibleItems[currentIndex];
     viewerBody.innerHTML = '';
 
     if (current.type === 'video') {
@@ -272,12 +290,13 @@ export function initProjectsFolder(initialPaths = []) {
       applyZoom();
     }
 
-    caption.textContent = `${currentIndex + 1}/${items.length} - ${current.name}`;
+    const categoryLabel = normalizeCategoryLabel(current.category || 'sin-categoria');
+    caption.textContent = `${currentIndex + 1}/${visibleItems.length} - ${current.name} | Categoria: ${categoryLabel}`;
     updateZoomUi();
   }
 
   function openViewer(index) {
-    if (index < 0 || index >= items.length) return;
+    if (index < 0 || index >= visibleItems.length) return;
     currentIndex = index;
     viewer.style.display = 'flex';
     resetZoom();
@@ -298,32 +317,86 @@ export function initProjectsFolder(initialPaths = []) {
   }
 
   function goPrev() {
-    if (items.length === 0) return;
-    currentIndex = (currentIndex - 1 + items.length) % items.length;
+    if (visibleItems.length === 0) return;
+    currentIndex = (currentIndex - 1 + visibleItems.length) % visibleItems.length;
     renderCurrentMedia();
   }
 
   function goNext() {
-    if (items.length === 0) return;
-    currentIndex = (currentIndex + 1) % items.length;
+    if (visibleItems.length === 0) return;
+    currentIndex = (currentIndex + 1) % visibleItems.length;
     renderCurrentMedia();
+  }
+
+  function getAvailableCategories() {
+    const categories = new Set();
+    allItems.forEach((item) => {
+      if (item.category) categories.add(item.category);
+    });
+    return Array.from(categories).sort((a, b) => a.localeCompare(b));
+  }
+
+  function normalizeCategoryLabel(value) {
+    if (!value) return 'Sin categoria';
+    return value
+      .split('-')
+      .map((chunk) => chunk.charAt(0).toUpperCase() + chunk.slice(1))
+      .join(' ');
+  }
+
+  function applyCategoryFilter() {
+    if (activeCategory === 'all') {
+      visibleItems = [...allItems];
+      return;
+    }
+    visibleItems = allItems.filter((item) => item.category === activeCategory);
+  }
+
+  function setActiveCategory(nextCategory) {
+    activeCategory = nextCategory;
+    applyCategoryFilter();
+    closeViewer();
+    renderGrid();
+    renderFilters();
+  }
+
+  function renderFilters() {
+    const categories = getAvailableCategories();
+    filterContainer.innerHTML = '';
+
+    const allBtn = document.createElement('button');
+    allBtn.type = 'button';
+    allBtn.className = `projects-filter-btn${activeCategory === 'all' ? ' is-active' : ''}`;
+    allBtn.textContent = 'Todo';
+    allBtn.addEventListener('click', () => setActiveCategory('all'));
+    filterContainer.appendChild(allBtn);
+
+    categories.forEach((category) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = `projects-filter-btn${activeCategory === category ? ' is-active' : ''}`;
+      btn.textContent = normalizeCategoryLabel(category);
+      btn.addEventListener('click', () => setActiveCategory(category));
+      filterContainer.appendChild(btn);
+    });
   }
 
   function renderGrid() {
     grid.innerHTML = '';
 
-    if (items.length === 0) {
+    if (visibleItems.length === 0) {
       empty.style.display = 'block';
       return;
     }
 
     empty.style.display = 'none';
 
-    items.forEach((item, index) => {
+    visibleItems.forEach((item, index) => {
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'desktop-icon projects-item';
-      button.title = item.name;
+      const categoryLabel = normalizeCategoryLabel(item.category || 'sin-categoria');
+      button.title = `${item.name} (${categoryLabel})`;
 
       const icon = document.createElement('img');
       icon.src = item.type === 'video' ? VIDEO_ICON : IMAGE_ICON;
@@ -343,18 +416,39 @@ export function initProjectsFolder(initialPaths = []) {
     });
   }
 
+  function setMediaItems(mediaItems) {
+    const normalized = Array.isArray(mediaItems) ? mediaItems : [];
+    allItems = normalized
+      .map((entry) => {
+        if (!entry) return null;
+        const path = typeof entry === 'string' ? entry : entry.path;
+        if (!path) return null;
+        const type = getMediaType(path);
+        if (type !== 'image' && type !== 'video') return null;
+
+        const name = typeof entry === 'object' && entry.name ? entry.name : getFileName(path);
+        const categoryRaw = typeof entry === 'object' && typeof entry.category === 'string'
+          ? entry.category.trim().toLowerCase()
+          : 'sin-categoria';
+
+        return {
+          path,
+          type,
+          name,
+          category: categoryRaw || 'sin-categoria',
+        };
+      })
+      .filter(Boolean);
+
+    applyCategoryFilter();
+    closeViewer();
+    renderFilters();
+    renderGrid();
+  }
+
   function setMediaPaths(paths) {
     const normalized = Array.isArray(paths) ? paths : [];
-    items = normalized
-      .map((path) => ({
-        path,
-        type: getMediaType(path),
-        name: getFileName(path),
-      }))
-      .filter((item) => item.type === 'image' || item.type === 'video');
-
-    closeViewer();
-    renderGrid();
+    setMediaItems(normalized.map((path) => ({ path })));
   }
 
   prevBtn.addEventListener('click', goPrev);
@@ -463,5 +557,6 @@ export function initProjectsFolder(initialPaths = []) {
 
   return {
     setMediaPaths,
+    setMediaItems,
   };
 }

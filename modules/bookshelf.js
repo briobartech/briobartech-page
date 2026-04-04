@@ -150,15 +150,56 @@ async function loadPdfManifest() {
 export async function initBookshelf() {
   const shelf = document.getElementById('bookshelfBooks');
   const modal = document.getElementById('pdfViewerModal');
+  const paper = modal ? modal.querySelector('.pdf-paper') : null;
   const frame = document.getElementById('pdfViewerFrame');
   const title = document.getElementById('pdfViewerTitle');
   const closeBtn = document.getElementById('closePdfViewerBtn');
 
-  if (!shelf || !modal || !frame || !title || !closeBtn) return;
+  if (!shelf || !modal || !paper || !frame || !title || !closeBtn) return;
+
+  let fullscreenBtn = null;
+  const header = closeBtn.closest('.pdf-paper-header');
+  if (header && !header.querySelector('.pdf-header-actions')) {
+    const actions = document.createElement('div');
+    actions.className = 'pdf-header-actions';
+
+    fullscreenBtn = document.createElement('button');
+    fullscreenBtn.type = 'button';
+    fullscreenBtn.className = 'close-btn pdf-fullscreen-btn';
+    fullscreenBtn.textContent = '⊡';
+    fullscreenBtn.setAttribute('aria-label', 'Pantalla completa');
+    fullscreenBtn.title = 'Pantalla completa';
+
+    actions.appendChild(fullscreenBtn);
+    actions.appendChild(closeBtn);
+    header.appendChild(actions);
+  } else if (header) {
+    fullscreenBtn = header.querySelector('.pdf-fullscreen-btn');
+  }
 
   let pdfPaths = await loadPdfManifest();
   let generatedBookUrls = [];
   let currentPage = 0;
+
+  function updateFullscreenUi() {
+    if (!fullscreenBtn) return;
+    const isFullscreen = document.fullscreenElement === paper;
+    fullscreenBtn.textContent = isFullscreen ? '><' : '⊡';
+    fullscreenBtn.setAttribute('aria-label', isFullscreen ? 'Salir de pantalla completa' : 'Pantalla completa');
+    fullscreenBtn.title = isFullscreen ? 'Salir de pantalla completa' : 'Pantalla completa';
+  }
+
+  async function togglePdfFullscreen() {
+    try {
+      if (document.fullscreenElement === paper) {
+        await document.exitFullscreen();
+      } else {
+        await paper.requestFullscreen();
+      }
+    } catch {
+      // Ignore fullscreen API errors on unsupported browsers.
+    }
+  }
 
   const pagination = document.createElement('div');
   pagination.className = 'bookshelf-pagination';
@@ -187,11 +228,16 @@ export async function initBookshelf() {
     frame.src = path;
     title.textContent = path.split('/').pop() || 'Documento';
     modal.style.display = 'flex';
+    updateFullscreenUi();
   }
 
   function closePdf() {
+    if (document.fullscreenElement === paper) {
+      document.exitFullscreen().catch(() => {});
+    }
     modal.style.display = 'none';
     frame.src = '';
+    updateFullscreenUi();
   }
 
   function updatePagination(paths) {
@@ -263,13 +309,25 @@ export async function initBookshelf() {
   });
 
   closeBtn.addEventListener('click', closePdf);
+  if (fullscreenBtn) {
+    fullscreenBtn.addEventListener('click', togglePdfFullscreen);
+  }
+
+  document.addEventListener('fullscreenchange', updateFullscreenUi);
+
   modal.addEventListener('click', (event) => {
     if (event.target === modal) closePdf();
   });
 
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && modal.style.display === 'flex') {
+      if (document.fullscreenElement === paper) return;
       closePdf();
+    }
+
+    if ((event.key.toLowerCase() === 'f') && modal.style.display === 'flex') {
+      event.preventDefault();
+      togglePdfFullscreen();
     }
   });
 
@@ -282,4 +340,6 @@ export async function initBookshelf() {
     currentPage = 0;
     renderBooks(pdfPaths);
   };
+
+  updateFullscreenUi();
 }

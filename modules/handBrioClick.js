@@ -3,7 +3,7 @@ import { showMessage } from './showMessage.js';
 import { state } from './state.js';
 import { closeInteractiveModals } from './modalExclusivity.js';
 
-let isBrioWorking = true;
+let isBrioWorking = false;
 let isMessageActive = false;
 const usedPhrases = new Set();
 let busyInterruptions = 0;
@@ -186,6 +186,11 @@ function openDesktopBrightModal() {
 
 export function checkBrioStatus() {
   applyBrioWorkingVisualState();
+}
+
+export function showBrioFrontIfIdle() {
+  if (isBrioWorking || !brio[0]) return;
+  brio[0].src = './assets/img/brio-front.png';
 }
 
 export async function handleBrioClick(e) {
