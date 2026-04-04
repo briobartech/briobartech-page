@@ -9,15 +9,8 @@ export const datos = {
         'El demonio de Udev',
         'Japones',
         'El frio farfecht',
-        'El que se ríe de los pelados',
-        'El que se ríe de los pelados 2: la venganza del pelado', 
-        'El que se ríe de los pelados 3: el pelado contraataca', 
-        'El que se ríe de los pelados 4: el pelado definitivo', 
-        'El que se ríe de los pelados 5: el pelado final', 
-        'El que se ríe de los pelados 6: el pelado eterno'
-    
-
-    ],
+        'Bukowski reader',
+        'Dimitri Finds Out', ],
     studies: ["Tecnicatura Superior en Desarrollo de Software",
         "Tecnicatura superior en Computación y Redes"
     ],
