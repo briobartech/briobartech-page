@@ -322,10 +322,12 @@ languageToggleBtn.addEventListener("click", () => {
   resetBusyInterruptions();
 });
 
-document.getElementById("enterButton").addEventListener("click", () => {
+document.getElementById("enterButton").addEventListener("click", async () => {
   const hasVisitedBefore = localStorage.getItem("hasVisited");
   const startOverlay = document.getElementById("startOverlay");
   const nowPlayingWidget = document.getElementById('nowPlayingWidget');
+  const brio = document.querySelector(".brio");
+  const isWorkingNow = getIsBrioWorking();
 
   mobileNavigation.requestGyroscopePermission();
 
@@ -359,9 +361,24 @@ document.getElementById("enterButton").addEventListener("click", () => {
       ? source[Math.floor(Math.random() * source.length)]
       : (window.languageState.current === "es" ? "Bienvenido de nuevo." : "Welcome back.");
 
-  setTimeout(() => {
-    showMessage(randomGreeting);
-  }, 500);
+  if (!isWorkingNow && brio) {
+    brio.src = "./assets/img/brio-turn-back.gif";
+    setTimeout(() => {
+      brio.src = "./assets/img/brio-front.png";
+    }, 500);
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    await showMessage(randomGreeting);
+
+    brio.src = "./assets/img/brio-back-to-windows.gif";
+    setTimeout(() => {
+      brio.src = "./assets/img/brio-back.png";
+    }, 500);
+  } else {
+    setTimeout(() => {
+      showMessage(randomGreeting);
+    }, 500);
+  }
 
   // Mark as visited
   localStorage.setItem("hasVisited", "true");
