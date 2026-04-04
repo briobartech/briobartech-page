@@ -44,6 +44,12 @@ const GROUP_RARITY_LABEL = {
   hobbies: 'Comun',
 };
 
+let skillMeterAnimationTimers = [];
+let certificateRevealResetTimer = null;
+let skillMeterStartTimer = null;
+let expBarTimer = null;
+let expBarReflexTimer = null;
+
 function getAgeFromBirthdate(birthdate) {
   if (!birthdate) return null;
 
@@ -238,6 +244,14 @@ function renderEpithetList(container, entries, emptyText) {
     return 'comun';
   };
 
+  const normalizeEpithetKey = (value) => String(value || '')
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
   const safeEntries = Array.isArray(entries) ? entries.filter(Boolean) : [];
   container.innerHTML = '';
 
@@ -258,6 +272,7 @@ function renderEpithetList(container, entries, emptyText) {
     item.className = 'certificate-epithet-item';
     item.dataset.rarity = rarity;
     item.dataset.rarityLabel = rarityLabelMap[rarity] || rarityLabelMap.comun;
+    item.dataset.epithetKey = normalizeEpithetKey(entry);
     item.textContent = entry;
     container.appendChild(item);
   });
@@ -279,6 +294,146 @@ function clampMastery(value) {
   const numeric = Number(value);
   if (Number.isNaN(numeric)) return 0;
   return Math.max(0, Math.min(8, Math.round(numeric)));
+}
+
+function clearSkillMeterAnimationTimers() {
+  skillMeterAnimationTimers.forEach((timerId) => {
+    window.clearTimeout(timerId);
+  });
+  skillMeterAnimationTimers = [];
+}
+
+function animateExpBar() {
+  const fill = document.getElementById('certificateExpFill');
+  if (!fill) return;
+  const target = fill.dataset.targetPercent || '0';
+  fill.classList.remove('is-active');
+  fill.style.width = `${target}%`;
+
+  if (expBarReflexTimer) {
+    window.clearTimeout(expBarReflexTimer);
+    expBarReflexTimer = null;
+  }
+
+  expBarReflexTimer = window.setTimeout(() => {
+    fill.classList.remove('is-active');
+    void fill.offsetWidth;
+    fill.classList.add('is-active');
+    expBarReflexTimer = null;
+  }, 450);
+}
+
+function animateSkillMeters(container) {
+  if (!container) return;
+
+  clearSkillMeterAnimationTimers();
+
+  const meters = Array.from(container.querySelectorAll('.certificate-skill-meter'));
+  let baseDelay = 0;
+
+  meters.forEach((meter) => {
+    const targetLevel = clampMastery(meter.dataset.targetLevel);
+    const units = Array.from(meter.querySelectorAll('.certificate-skill-unit'));
+
+    units.forEach((unit) => unit.classList.remove('is-active'));
+
+    for (let index = 0; index < targetLevel; index += 1) {
+      const timerId = window.setTimeout(() => {
+        units[index]?.classList.add('is-active');
+      }, baseDelay + (index * 55));
+
+      skillMeterAnimationTimers.push(timerId);
+    }
+
+    baseDelay += 70;
+  });
+}
+
+function runCertificateReveal(modal, onSkillsRootReady) {
+  if (!modal) return;
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const revealDuration = prefersReducedMotion ? 0 : 420;
+  const stepDelay = prefersReducedMotion ? 0 : 38;
+
+  if (certificateRevealResetTimer) {
+    window.clearTimeout(certificateRevealResetTimer);
+    certificateRevealResetTimer = null;
+  }
+
+  if (skillMeterStartTimer) {
+    window.clearTimeout(skillMeterStartTimer);
+    skillMeterStartTimer = null;
+  }
+
+  modal.classList.remove('is-opening');
+
+  const revealSelector = [
+    '.title-bar',
+    '.certificate-content',
+    '.certificate-profile-panel',
+    '.certificate-profile-frame',
+    '.certificate-profile-badge',
+    '.certificate-profile-badge > *',
+    '.certificate-profile-toggle',
+    '.certificate-sheet',
+    '.certificate-sheet-block',
+    '.certificate-sheet-title',
+    '.certificate-sheet-value',
+    '.certificate-sheet-list > li',
+  ].join(', ');
+
+  const uniqueRevealElements = Array.from(new Set(modal.querySelectorAll(revealSelector))).sort((first, second) => {
+    const firstRect = first.getBoundingClientRect();
+    const secondRect = second.getBoundingClientRect();
+
+    if (Math.abs(firstRect.top - secondRect.top) > 1) {
+      return firstRect.top - secondRect.top;
+    }
+
+    if (Math.abs(firstRect.left - secondRect.left) > 1) {
+      return firstRect.left - secondRect.left;
+    }
+
+    const relation = first.compareDocumentPosition(second);
+    return relation & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1;
+  });
+
+  const skillsRoot = modal.querySelector('#certificateSkillsBlock');
+  let skillsRootRevealEnd = 0;
+
+  uniqueRevealElements.forEach((element, index) => {
+    const delay = index * stepDelay;
+    element.classList.add('certificate-reveal');
+    element.style.setProperty('--certificate-reveal-delay', `${delay}ms`);
+
+    if (skillsRoot && (element === skillsRoot || skillsRoot.contains(element))) {
+      skillsRootRevealEnd = Math.max(skillsRootRevealEnd, delay + revealDuration);
+    }
+  });
+
+  window.requestAnimationFrame(() => {
+    modal.classList.add('is-opening');
+  });
+
+  if (typeof onSkillsRootReady === 'function') {
+    const startDelay = skillsRoot ? Math.max(0, skillsRootRevealEnd - 480) : 0;
+    skillMeterStartTimer = window.setTimeout(() => {
+      onSkillsRootReady();
+      skillMeterStartTimer = null;
+    }, startDelay);
+  }
+
+  const totalDuration = revealDuration + Math.max(0, uniqueRevealElements.length - 1) * stepDelay;
+  certificateRevealResetTimer = window.setTimeout(() => {
+    uniqueRevealElements.forEach((element) => {
+      element.classList.remove('certificate-reveal');
+      element.style.removeProperty('--certificate-reveal-delay');
+    });
+
+    modal.classList.remove('is-opening');
+    certificateRevealResetTimer = null;
+  }, totalDuration + 90);
 }
 
 function renderSkillList(container) {
@@ -336,11 +491,11 @@ function renderSkillList(container) {
 
       const configuredMastery = datos.skillMastery?.[name];
       const level = clampMastery(configuredMastery ?? DEFAULT_GROUP_MASTERY[group] ?? 0);
+      meter.dataset.targetLevel = String(level);
 
       for (let i = 1; i <= 8; i += 1) {
         const unit = document.createElement('span');
         unit.className = 'certificate-skill-unit';
-        if (i <= level) unit.classList.add('is-active');
         meter.appendChild(unit);
       }
 
@@ -355,6 +510,8 @@ function renderSkillList(container) {
     const fallback = document.createElement('li');
     fallback.textContent = 'Sin skills cargadas.';
     container.appendChild(fallback);
+    clearSkillMeterAnimationTimers();
+    return;
   }
 }
 
@@ -390,7 +547,8 @@ function renderCertificateData() {
     : 0;
 
   if (expFill) {
-    expFill.style.width = `${expPercent}%`;
+    expFill.style.width = '0%';
+    expFill.dataset.targetPercent = String(expPercent);
   }
 
   if (expText) {
@@ -449,9 +607,51 @@ export function initCertificateModal() {
     renderCertificateData();
     updateBrioToggleLabel();
     modal.style.display = 'block';
+    runCertificateReveal(modal, () => {
+      const skills = document.getElementById('certificateSkills');
+      animateSkillMeters(skills);
+    });
+    const expWrap = modal.querySelector('.certificate-exp-wrap');
+    const revealDelayStr = expWrap?.style.getPropertyValue('--certificate-reveal-delay') || '0ms';
+    const expRevealDelay = parseInt(revealDelayStr, 10) || 0;
+    if (expBarTimer) window.clearTimeout(expBarTimer);
+    expBarTimer = window.setTimeout(() => {
+      animateExpBar();
+      expBarTimer = null;
+    }, expRevealDelay + 420);
   };
 
   const closeModal = () => {
+    if (expBarTimer) {
+      window.clearTimeout(expBarTimer);
+      expBarTimer = null;
+    }
+    if (expBarReflexTimer) {
+      window.clearTimeout(expBarReflexTimer);
+      expBarReflexTimer = null;
+    }
+    const fill = document.getElementById('certificateExpFill');
+    if (fill) {
+      fill.style.width = '0%';
+      fill.classList.remove('is-active');
+    }
+    if (certificateRevealResetTimer) {
+      window.clearTimeout(certificateRevealResetTimer);
+      certificateRevealResetTimer = null;
+    }
+
+    modal.classList.remove('is-opening');
+    modal.querySelectorAll('.certificate-reveal').forEach((element) => {
+      element.classList.remove('certificate-reveal');
+      element.style.removeProperty('--certificate-reveal-delay');
+    });
+
+    if (skillMeterStartTimer) {
+      window.clearTimeout(skillMeterStartTimer);
+      skillMeterStartTimer = null;
+    }
+
+    clearSkillMeterAnimationTimers();
     modal.style.display = 'none';
   };
 

@@ -248,6 +248,13 @@ body.is-mobile-horizontal-nav .scene {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  filter: grayscale(0.6) saturate(0.55) brightness(0.76) contrast(0.9);
+  transition: filter 180ms ease;
+}
+
+.shelf-book:hover img,
+.shelf-book:focus-visible img {
+  filter: grayscale(0.2) saturate(0.92) brightness(0.9) contrast(0.96);
 }
 
 .bookshelf-pagination {
@@ -487,6 +494,22 @@ body.is-mobile-horizontal-nav .scene {
   overflow: hidden;
 }
 
+#certificateModal.certificate-modal .title-bar {
+  transform-origin: top center;
+}
+
+#certificateModal.certificate-modal .certificate-reveal {
+  opacity: 0;
+  transform: translateY(-20px) scale(0.985);
+  transform-origin: top center;
+  will-change: transform, opacity;
+}
+
+#certificateModal.certificate-modal.is-opening .certificate-reveal {
+  animation: certificateRevealDown 420ms cubic-bezier(0.22, 0.9, 0.26, 1) both;
+  animation-delay: var(--certificate-reveal-delay, 0ms);
+}
+
 #certificateModal .title-bar {
   min-height: 44px;
   padding: 10px 12px;
@@ -692,6 +715,31 @@ body.is-mobile-horizontal-nav .scene {
   transition: width 0.45s ease;
 }
 
+.certificate-exp-fill.is-active {
+  animation: certificateExpFillPowerOn 420ms cubic-bezier(0.2, 0.85, 0.3, 1) both;
+}
+
+@keyframes certificateExpFillPowerOn {
+  0% {
+    filter: brightness(1.8) saturate(1.45) hue-rotate(8deg);
+    box-shadow:
+      0 0 14px rgba(93, 154, 255, 0.58),
+      0 0 22px rgba(116, 166, 255, 0.74);
+  }
+
+  45% {
+    filter: brightness(2.2) saturate(1.7) hue-rotate(3deg);
+    box-shadow:
+      0 0 16px rgba(116, 235, 255, 0.95),
+      0 0 28px rgba(82, 138, 255, 0.82);
+  }
+
+  100% {
+    filter: brightness(1) saturate(1) hue-rotate(0deg);
+    box-shadow: 0 0 14px rgba(93, 154, 255, 0.58);
+  }
+}
+
 .certificate-exp-text {
   margin-top: 6px;
   font-size: 10px;
@@ -814,6 +862,7 @@ body.is-mobile-horizontal-nav .scene {
   color: #eaf1ff;
   font-size: 13px;
   line-height: 1.35;
+  overflow: hidden;
 }
 
 .certificate-epithet-item::before {
@@ -843,32 +892,173 @@ body.is-mobile-horizontal-nav .scene {
   background: rgba(29, 43, 79, 0.7);
 }
 
+.certificate-epithet-item[data-rarity='comun'] {
+  border-color: rgba(108, 126, 170, 0.3);
+  background:
+    linear-gradient(180deg, rgba(32, 41, 69, 0.7) 0%, rgba(17, 24, 42, 0.9) 100%);
+  box-shadow: inset 0 0 0 1px rgba(196, 210, 255, 0.04), 0 4px 10px rgba(0, 0, 0, 0.16);
+  color: #cfdaf7;
+}
+
+.certificate-epithet-item[data-rarity='comun']::before {
+  content: '•';
+  color: #9aabd8;
+  font-size: 13px;
+  text-shadow: none;
+}
+
+.certificate-epithet-item[data-rarity='comun']::after {
+  color: #9fb1e0;
+  border-color: rgba(111, 133, 188, 0.34);
+  background: rgba(28, 39, 67, 0.7);
+}
+
 .certificate-epithet-item[data-rarity='legendario'] {
   border-color: rgba(244, 210, 95, 0.55);
   background:
+    linear-gradient(112deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 240, 189, 0) 28%,
+      rgba(255, 240, 189, 0.42) 46%,
+      rgba(255, 255, 255, 0.86) 50%,
+      rgba(255, 237, 178, 0.34) 56%,
+      rgba(255, 255, 255, 0) 72%,
+      rgba(255, 255, 255, 0) 100%),
+    linear-gradient(180deg, rgba(12, 10, 8, 0.4) 0%, rgba(12, 10, 8, 0.4) 100%),
+    url('./../img/Potential_rotating_charge.gif'),
     linear-gradient(180deg, rgba(88, 62, 12, 0.5) 0%, rgba(33, 24, 9, 0.88) 100%),
     linear-gradient(180deg, rgba(31, 49, 92, 0.86) 0%, rgba(15, 23, 44, 0.94) 100%);
+  background-size: 240% 100%, 100% 100%, 122% auto, auto, auto;
+  background-position: -230% 0, 0 0, center center, 0 0, 0 0;
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 237, 177, 0.2),
+    inset 0 0 24px rgba(255, 213, 102, 0.12),
+    0 8px 18px rgba(0, 0, 0, 0.26),
+    0 0 14px rgba(255, 214, 109, 0.2);
+  color: #fff4cb;
+  font-weight: 600;
+  animation: certificateLegendaryReflex 4.2s cubic-bezier(0.2, 0.84, 0.28, 1) infinite,
+    certificateLegendaryAura 5.2s ease-in-out infinite;
 }
 
-.certificate-epithet-item[data-rarity='legendario']::before,
+.certificate-epithet-item[data-rarity='legendario']::before {
+  content: '✶';
+  font-size: 12px;
+  text-shadow: 0 0 8px rgba(255, 226, 140, 0.55);
+}
+
+.certificate-epithet-item[data-rarity='legendario']::before {
+  color: #ffe082;
+  border-color: rgba(244, 210, 95, 0.5);
+  text-shadow: 0 0 8px rgba(255, 214, 109, 0.28);
+}
+
 .certificate-epithet-item[data-rarity='legendario']::after {
   color: #ffe082;
   border-color: rgba(244, 210, 95, 0.5);
-  background: rgba(77, 57, 15, 0.72);
+  background: linear-gradient(180deg, rgba(110, 78, 18, 0.86) 0%, rgba(69, 49, 13, 0.88) 100%);
+  text-shadow: 0 0 8px rgba(255, 214, 109, 0.28);
 }
 
 .certificate-epithet-item[data-rarity='epico'] {
   border-color: rgba(189, 144, 255, 0.52);
   background:
+    linear-gradient(112deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(234, 211, 255, 0) 38%,
+      rgba(234, 211, 255, 0.24) 48%,
+      rgba(255, 255, 255, 0.42) 52%,
+      rgba(234, 211, 255, 0.18) 58%,
+      rgba(255, 255, 255, 0) 70%,
+      rgba(255, 255, 255, 0) 100%),
     linear-gradient(180deg, rgba(66, 38, 108, 0.45) 0%, rgba(26, 18, 49, 0.88) 100%),
     linear-gradient(180deg, rgba(31, 49, 92, 0.86) 0%, rgba(15, 23, 44, 0.94) 100%);
+  background-size: 210% 100%, auto, auto;
+  background-position: -205% 0, 0 0, 0 0;
+  background-repeat: no-repeat;
+  animation: certificateEpicReflex 6.8s cubic-bezier(0.22, 0.78, 0.26, 1) infinite;
 }
 
-.certificate-epithet-item[data-rarity='epico']::before,
+.certificate-epithet-item[data-rarity='epico']::before {
+  color: #ddb9ff;
+  border-color: rgba(189, 144, 255, 0.52);
+}
+
 .certificate-epithet-item[data-rarity='epico']::after {
   color: #ddb9ff;
   border-color: rgba(189, 144, 255, 0.52);
   background: rgba(59, 34, 95, 0.74);
+}
+
+.certificate-epithet-item[data-rarity='epico'][data-epithet-key='japones'] {
+  border-color: rgba(255, 142, 196, 0.64);
+  background:
+    linear-gradient(112deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 205, 230, 0) 38%,
+      rgba(255, 205, 230, 0.26) 48%,
+      rgba(255, 255, 255, 0.46) 52%,
+      rgba(255, 205, 230, 0.22) 58%,
+      rgba(255, 255, 255, 0) 70%,
+      rgba(255, 255, 255, 0) 100%),
+    linear-gradient(180deg, rgba(35, 8, 25, 0.34) 0%, rgba(35, 8, 25, 0.42) 100%),
+    url('./../img/japan-epiteto.jpg'),
+    linear-gradient(180deg, rgba(138, 35, 97, 0.34) 0%, rgba(66, 14, 44, 0.86) 100%),
+    linear-gradient(180deg, rgba(86, 26, 68, 0.84) 0%, rgba(40, 13, 34, 0.92) 100%);
+  background-size: 210% 100%, 100% 100%, 122% auto, auto, auto;
+  background-position: -205% 0, 0 0, center -48px, 0 0, 0 0;
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat;
+  animation: certificateEpicReflexWithGif 6.8s cubic-bezier(0.22, 0.78, 0.26, 1) infinite;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 204, 230, 0.18),
+    0 7px 15px rgba(0, 0, 0, 0.23),
+    0 0 14px rgba(255, 120, 196, 0.22);
+}
+
+.certificate-epithet-item[data-rarity='epico'][data-epithet-key='japones']::before,
+.certificate-epithet-item[data-rarity='epico'][data-epithet-key='japones']::after {
+  color: #ffc8e8;
+  border-color: rgba(255, 142, 196, 0.64);
+}
+
+.certificate-epithet-item[data-rarity='epico'][data-epithet-key='japones']::after {
+  background: rgba(112, 26, 79, 0.78);
+}
+
+.certificate-epithet-item[data-rarity='epico'][data-epithet-key='bukowski-reader'] {
+  border-color: rgba(188, 196, 215, 0.52);
+  background:
+    linear-gradient(112deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(219, 223, 231, 0) 38%,
+      rgba(219, 223, 231, 0.2) 48%,
+      rgba(255, 255, 255, 0.38) 52%,
+      rgba(219, 223, 231, 0.16) 58%,
+      rgba(255, 255, 255, 0) 70%,
+      rgba(255, 255, 255, 0) 100%),
+    linear-gradient(180deg, rgba(14, 14, 16, 0.42) 0%, rgba(14, 14, 16, 0.48) 100%),
+    url('./../img/bukowski-epiteto.png'),
+    linear-gradient(180deg, rgba(74, 77, 88, 0.38) 0%, rgba(34, 37, 45, 0.88) 100%),
+    linear-gradient(180deg, rgba(42, 46, 56, 0.82) 0%, rgba(21, 24, 33, 0.93) 100%);
+  background-size: 210% 100%, 100% 100%, 122% auto, auto, auto;
+  background-position: -205% 0, 0 0, center -56px, 0 0, 0 0;
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat;
+  animation: certificateEpicReflexWithBukowskiGif 6.8s cubic-bezier(0.22, 0.78, 0.26, 1) infinite;
+  box-shadow:
+    inset 0 0 0 1px rgba(226, 232, 246, 0.16),
+    0 7px 15px rgba(0, 0, 0, 0.24),
+    0 0 10px rgba(169, 178, 198, 0.16);
+}
+
+.certificate-epithet-item[data-rarity='epico'][data-epithet-key='bukowski-reader']::before,
+.certificate-epithet-item[data-rarity='epico'][data-epithet-key='bukowski-reader']::after {
+  color: #d5dbe8;
+  border-color: rgba(188, 196, 215, 0.52);
+}
+
+.certificate-epithet-item[data-rarity='epico'][data-epithet-key='bukowski-reader']::after {
+  background: rgba(59, 63, 74, 0.78);
 }
 
 .certificate-epithet-item[data-rarity='raro'] {
@@ -876,13 +1066,124 @@ body.is-mobile-horizontal-nav .scene {
   background:
     linear-gradient(180deg, rgba(23, 70, 103, 0.4) 0%, rgba(11, 32, 56, 0.88) 100%),
     linear-gradient(180deg, rgba(31, 49, 92, 0.86) 0%, rgba(15, 23, 44, 0.94) 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(173, 236, 255, 0.14),
+    0 7px 15px rgba(0, 0, 0, 0.23),
+    0 0 10px rgba(97, 210, 255, 0.2);
+  color: #dff5ff;
+  font-weight: 600;
 }
 
-.certificate-epithet-item[data-rarity='raro']::before,
+.certificate-epithet-item[data-rarity='raro']::before {
+  content: '✦';
+  font-size: 12px;
+  text-shadow: 0 0 7px rgba(133, 227, 255, 0.45);
+}
+
+.certificate-epithet-item[data-rarity='raro']::before {
+  color: #9be7ff;
+  border-color: rgba(114, 208, 255, 0.48);
+}
+
 .certificate-epithet-item[data-rarity='raro']::after {
   color: #9be7ff;
   border-color: rgba(114, 208, 255, 0.48);
   background: rgba(16, 62, 89, 0.72);
+}
+
+@keyframes certificateLegendaryReflex {
+  0%,
+  58%,
+  100% {
+    background-position: -230% 0, 0 0, center center, 0 0, 0 0;
+  }
+
+  24% {
+    background-position: 210% 0, 0 0, center center, 0 0, 0 0;
+  }
+}
+
+@keyframes certificateLegendaryAura {
+  0%,
+  100% {
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 245, 214, 0.08),
+      inset 0 1px 0 rgba(255, 233, 163, 0.82),
+      0 8px 14px rgba(0, 0, 0, 0.22),
+      0 0 0 rgba(255, 214, 109, 0);
+  }
+
+  25% {
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 245, 214, 0.09),
+      inset -1px 0 0 rgba(255, 233, 163, 0.82),
+      0 8px 15px rgba(0, 0, 0, 0.23),
+      0 0 10px rgba(255, 214, 109, 0.2);
+  }
+
+  45% {
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 245, 214, 0.16),
+      inset 0 -1px 0 rgba(255, 233, 163, 0.86),
+      0 8px 16px rgba(0, 0, 0, 0.24),
+      0 0 18px rgba(255, 214, 109, 0.35);
+  }
+
+  72% {
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 245, 214, 0.1),
+      inset 1px 0 0 rgba(255, 233, 163, 0.82),
+      0 8px 15px rgba(0, 0, 0, 0.23),
+      0 0 12px rgba(255, 214, 109, 0.22);
+  }
+}
+
+@keyframes certificateRareReflex {
+  0%,
+  68%,
+  100% {
+    background-position: -215% 0, 0 0, 0 0;
+  }
+
+  30% {
+    background-position: 205% 0, 0 0, 0 0;
+  }
+}
+
+@keyframes certificateEpicReflex {
+  0%,
+  74%,
+  100% {
+    background-position: -205% 0, 0 0, 0 0;
+  }
+
+  33% {
+    background-position: 190% 0, 0 0, 0 0;
+  }
+}
+
+@keyframes certificateEpicReflexWithGif {
+  0%,
+  74%,
+  100% {
+    background-position: -205% 0, 0 0, center -72px, 0 0, 0 0;
+  }
+
+  33% {
+    background-position: 190% 0, 0 0, center -72px, 0 0, 0 0;
+  }
+}
+
+@keyframes certificateEpicReflexWithBukowskiGif {
+  0%,
+  74%,
+  100% {
+    background-position: -205% 0, 0 0, center -56px, 0 0, 0 0;
+  }
+
+  33% {
+    background-position: 190% 0, 0 0, center -56px, 0 0, 0 0;
+  }
 }
 
 #certificateAchievements.certificate-sheet-list {
@@ -1033,6 +1334,8 @@ body.is-mobile-horizontal-nav .scene {
 .certificate-skill-unit.is-active {
   background: linear-gradient(180deg, #ffef9c 0%, #f4d25f 100%);
   border-color: #d8b74b;
+  box-shadow: 0 0 0 rgba(255, 223, 122, 0);
+  animation: certificateSkillUnitPowerOn 420ms cubic-bezier(0.2, 0.85, 0.3, 1) both;
 }
 
 .certificate-skill-item[data-group='frameworks'] .certificate-skill-unit.is-active {
@@ -1053,6 +1356,26 @@ body.is-mobile-horizontal-nav .scene {
 .certificate-skill-item[data-group='hobbies'] .certificate-skill-unit.is-active {
   background: linear-gradient(180deg, #d5f9c9 0%, #8fe59f 100%);
   border-color: #6ccd7e;
+}
+
+@keyframes certificateSkillUnitPowerOn {
+  0% {
+    filter: brightness(1.85) saturate(1.5) hue-rotate(6deg);
+    box-shadow: 0 0 0 rgba(116, 235, 255, 0);
+  }
+
+  45% {
+    filter: brightness(2.35) saturate(1.9) hue-rotate(14deg);
+    box-shadow:
+      0 0 14px rgba(116, 235, 255, 0.95),
+      0 0 28px rgba(82, 138, 255, 0.8),
+      0 0 40px rgba(58, 98, 255, 0.42);
+  }
+
+  100% {
+    filter: brightness(1) saturate(1) hue-rotate(0deg);
+    box-shadow: 0 0 0 rgba(116, 235, 255, 0);
+  }
 }
 
 @keyframes certificateScanlineMove {
@@ -1098,7 +1421,42 @@ body.is-mobile-horizontal-nav .scene {
   }
 }
 
+@keyframes certificateRevealDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.985);
+  }
+
+  55% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .certificate-skill-unit.is-active {
+    animation: none;
+    box-shadow: none;
+    filter: none;
+  }
+
+  .certificate-epithet-item[data-rarity='legendario'],
+  .certificate-epithet-item[data-rarity='epico'],
+  .certificate-epithet-item[data-rarity='raro'] {
+    animation: none;
+  }
+
+  #certificateModal.certificate-modal .certificate-reveal,
+  #certificateModal.certificate-modal.is-opening .certificate-reveal {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
   .certificate-profile-badge::after {
     animation: none;
   }
